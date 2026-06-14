@@ -205,11 +205,20 @@ h1, h2, h3 {
 }
 
 .loading-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: var(--muted);
   font-family: Consolas, monospace;
   font-size: 12px;
   text-transform: uppercase;
-  margin-top: 20px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
 
 /* Features Grid */
@@ -285,15 +294,12 @@ h1, h2, h3 {
 }
 
 .crypto-name {
-  min-width: 100px;
+  flex: 1;
   color: var(--orange);
   font: 800 12px Consolas, monospace;
   text-transform: uppercase;
   letter-spacing: .08em;
   text-align: left;
-  border-right: 1px solid var(--line);
-  padding-right: 10px;
-  margin-right: 10px;
 }
 
 .crypto-address {
@@ -383,6 +389,6 @@ footer p {
   .hero { padding: 40px 20px; }
   .hero h2 { font-size: 32px; }
   .crypto-wallet { flex-direction: column; align-items: stretch; gap: 10px; }
-  .crypto-name { border-right: none; border-bottom: 1px solid var(--line); padding-bottom: 5px; margin-right: 0; }
+  .crypto-name { border-bottom: 1px solid var(--line); padding-bottom: 5px; }
   .copy-btn { width: 100%; }
 }
