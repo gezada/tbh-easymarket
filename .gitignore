@@ -20,6 +20,14 @@ data/loc-en.json
 data/loc-en.bin
 
 # ===== Node / sistema =====
+
+# Tabelas extraídas dos assets do jogo (cada usuário gera as suas)
+data/tbh-itemnames.json
+data/tbh-itemtable.json
+data/loc-en.json
+data/loc-en.bin
+
+# ===== Node / sistema =====
 node_modules/
 npm-debug.log*
 .DS_Store
@@ -29,3 +37,4 @@ dist/
 # ===== Pessoal do dev =====
 PROJECT-STATUS.md
 .giba-app.json
+docs/
