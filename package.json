@@ -24,9 +24,10 @@
       "icon": "icon/tbh-easymarket-icon.png"
     },
     "portable": {
-      "artifactName": "${productName} ${version} (Portable).exe"
+      "artifactName": "TBH-Easy-Market-Portable-${version}.exe"
     },
     "nsis": {
+      "artifactName": "TBH-Easy-Market-Setup-${version}.exe",
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,

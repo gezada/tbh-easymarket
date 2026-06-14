@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (name.includes('Setup') && name.endsWith('.exe')) {
         installerUrl = asset.browser_download_url;
       }
-      // The portable is the other .exe that does not contain Setup or blockmap
-      else if (!name.includes('Setup') && !name.includes('blockmap') && name.endsWith('.exe')) {
+      // The portable usually contains "Portable"
+      else if (name.includes('Portable') && name.endsWith('.exe')) {
         portableUrl = asset.browser_download_url;
       }
     }
