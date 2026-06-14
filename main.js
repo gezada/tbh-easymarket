@@ -30,8 +30,8 @@ const log = (msg) => {
 };
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-const CACHE_PATH = path.join(DATA, `items-${APPID}.json`);
-const CATALOG_PATH = path.join(DATA, `market-catalog-${APPID}.json`);
+const CACHE_PATH = path.join(DATA, `items-${APPID}-v2.json`);
+const CATALOG_PATH = path.join(DATA, `market-catalog-${APPID}-v2.json`);
 const DETAIL_CACHE_PATH = path.join(DATA, `market-details-${APPID}.json`);
 const FX_CACHE_PATH = path.join(DATA, 'exchange-rates.json');
 
