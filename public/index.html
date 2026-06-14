@@ -217,9 +217,24 @@
     #tbl thead tr,#tbl tr.item{grid-template-columns:42px minmax(82px,1fr) repeat(3,62px);gap:5px;padding-left:8px;padding-right:8px}.market-kind-cell,.ls,.steam-cell{display:none}.ic{width:34px;height:34px;margin:auto}
     .market-price{font-size:8px}.market-price.sell .price-value{font-size:10px}
   }
+  #updateBanner {
+    display: none;
+    background: #e74c3c;
+    color: #fff;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #updateBanner:hover {
+    background: #c0392b;
+  }
 </style>
 </head>
 <body>
+<div id="updateBanner" role="button" tabindex="0"></div>
 <header>
   <div class="topbar">
     <button id="homeButton" type="button" title="Back to top" aria-label="Back to top" disabled><span class="brand-icon"><img src="../icon/tbh-easymarket-icon.png" alt="TBH Easy Market"></span><span class="brand-name">Easy Market<em>Task Bar Hero</em></span></button>
@@ -983,6 +998,48 @@ setInterval(refreshStashSilently,30000);
 setInterval(()=>load(true,true),5*60*1000);
 
 updateLevelRange();loadExchangeRates().finally(load);
+
+// Auto-Updater UI Logic
+if (window.api && window.api.onUpdateAvailable) {
+  const banner = $('updateBanner');
+  let updateState = 'idle'; // idle | available | downloading | ready | portable
+  
+  window.api.onUpdateAvailable((info) => {
+    banner.style.display = 'block';
+    if (info.isPortable) {
+      updateState = 'portable';
+      banner.textContent = `A new version of TBH Easy Market is available! [Click here to download the new Portable version]`;
+    } else {
+      updateState = 'available';
+      banner.textContent = `A new version of TBH Easy Market is available! [Click here to download]`;
+    }
+  });
+
+  window.api.onUpdateProgress((percent) => {
+    if (updateState === 'portable') return;
+    updateState = 'downloading';
+    banner.textContent = `Downloading update... ${Math.round(percent)}%`;
+  });
+
+  window.api.onUpdateDownloaded(() => {
+    if (updateState === 'portable') return;
+    updateState = 'ready';
+    banner.textContent = `Update downloaded! [Click here to restart and install]`;
+  });
+
+  banner.addEventListener('click', () => {
+    if (updateState === 'portable') {
+      window.open('https://github.com/gezada/tbh-easymarket/releases/latest', '_blank');
+    } else if (updateState === 'available') {
+      updateState = 'downloading';
+      banner.textContent = `Starting download...`;
+      window.api.startUpdateDownload();
+    } else if (updateState === 'ready') {
+      banner.textContent = `Restarting...`;
+      window.api.installUpdate();
+    }
+  });
+}
 </script>
 </body>
 </html>

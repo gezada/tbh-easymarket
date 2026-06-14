@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, shell, protocol, net } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -405,6 +406,47 @@ app.whenReady().then(() => {
     const market = readListCache();
     if (!market) return { supported: true, found: true, needItems: true };
     return { supported: true, found: true, ...tbhSave.readStash(catalogItemsForStash()) };
+  });
+
+  ipcMain.handle('api:prices-status', () => {
+    return {
+      updatedAt: state.updatedAt,
+      error: state.error,
+      refreshing: state.refreshing,
+    };
+  });
+
+  // Auto-Updater Setup
+  autoUpdater.autoDownload = false;
+  autoUpdater.on('update-available', (info) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater:update-available', {
+        version: info.version,
+        isPortable: process.env.PORTABLE_EXECUTABLE_DIR !== undefined
+      });
+    }
+  });
+  autoUpdater.on('download-progress', (progressObj) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater:download-progress', progressObj.percent);
+    }
+  });
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater:update-downloaded');
+    }
+  });
+  
+  // Wait a bit before checking updates so the window can load completely
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch(e => log(`Update check error: ${e.message}`));
+  }, 3000);
+
+  ipcMain.handle('updater:start-download', () => {
+    autoUpdater.downloadUpdate().catch(e => log(`Download error: ${e.message}`));
+  });
+  ipcMain.handle('updater:install-update', () => {
+    autoUpdater.quitAndInstall();
   });
 
   createWindow();
