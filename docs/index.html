@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TBH Easy Market</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="background-overlay"></div>
+  
+  <main class="container">
+    <header class="hero">
+      <div class="brand">
+        <img src="icon.png" alt="TBH Easy Market Logo" class="logo">
+        <h1>TBH Easy Market</h1>
+      </div>
+      <h2>O seu Baú do <span>Task Bar Hero</span> em Dinheiro Real.</h2>
+      <p>Acompanhe o valor de mercado de todos os seus itens da Steam em um piscar de olhos. Sem complicação, sem planilhas chatas.</p>
+      
+      <div class="action-buttons">
+        <a id="btn-installer" href="#" class="btn btn-primary" aria-label="Baixar Instalador">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Baixar Instalador (Windows)
+        </a>
+        <a id="btn-portable" href="#" class="btn btn-secondary" aria-label="Baixar Portable">
+          Versão Portable (Não precisa instalar)
+        </a>
+      </div>
+      <div id="loading-state" class="loading-state">Procurando a versão mais recente...</div>
+    </header>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        </div>
+        <h3>Análise em Tempo Real</h3>
+        <p>Veja os preços atualizados diretamente do Mercado da Steam, incluindo itens não listados.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+        </div>
+        <h3>Atualizações Automáticas</h3>
+        <p>O aplicativo se atualiza sozinho para você nunca perder nenhuma novidade.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <h3>100% Gratuito</h3>
+        <p>Desenvolvido de fã para fã, de código aberto e sem cobranças ocultas.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Desenvolvido pela comunidade. É um programador curioso?</p>
+      <a href="https://github.com/gezada/tbh-easymarket" target="_blank" rel="noopener noreferrer" class="github-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        Veja o Código Aberto (Open Source) no GitHub
+      </a>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
