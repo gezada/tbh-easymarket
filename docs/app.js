@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadingState = document.getElementById('loading-state');
 
   try {
-    // Fetch the latest release from GitHub API
-    const response = await fetch('https://api.github.com/repos/gezada/tbh-easymarket/releases/latest');
+    // Fetch the latest release from GitHub API (with cache buster to avoid stuck 404s)
+    const response = await fetch('https://api.github.com/repos/gezada/tbh-easymarket/releases/latest?t=' + new Date().getTime());
     
     if (!response.ok) {
       throw new Error('Failed to fetch release');
