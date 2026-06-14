@@ -205,7 +205,7 @@ export function readStash(marketItems) {
           : label);
         const k = String(it.ItemKey);
         if (!unlistedAgg[k]) unlistedAgg[k] = {
-          name, hash: m?.hash || `unlisted-${k}`, priceCents: null, priceText: null, type: m?.type || type,
+          name, hash: m?.hash || name, priceCents: null, priceText: null, type: m?.type || type,
           icon: m?.icon || '', color: m?.color || '', url: m?.url || '', qty: 0, kind, grade, level: Number(r?.Level || 0),
           itemKey: k, marketListed: false, marketable: r?.IsCanExchangeMarketable === 'True', catalogKnown: Boolean(m?.hash),
           lastSeenPriceCents: m?.lastSeenPriceCents || 0, lastSeenAt: m?.lastSeenAt || 0,

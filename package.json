@@ -7,7 +7,31 @@
   "scripts": {
     "start": "electron .",
     "extract-tables": "node scripts/extract-tbh-tables.mjs",
-    "build:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-distribution.ps1"
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.eusouogiba.tbheasymarket",
+    "productName": "TBH Easy Market",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "icon/tbh-easymarket-icon.png"
+    },
+    "portable": {
+      "artifactName": "${productName} ${version} (Portable).exe"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false
+    }
   },
   "keywords": [
     "steam",
