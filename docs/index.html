@@ -25,10 +25,10 @@
       <p class="subtitle">Discover the real market value of your entire Steam stash in the blink of an eye. No hassle, no boring spreadsheets, and 100% ban-safe.</p>
       
       <div class="action-buttons">
-        <a id="btn-installer" href="#" class="btn btn-primary" aria-label="Download Installer">
+        <a id="btn-installer" href="#" class="btn btn-primary" aria-label="Download Installer" target="_blank">
           Download Installer (Windows)
         </a>
-        <a id="btn-portable" href="#" class="btn btn-secondary" aria-label="Download Portable">
+        <a id="btn-portable" href="#" class="btn btn-secondary" aria-label="Download Portable" target="_blank">
           Portable Version (No install required)
         </a>
         <a href="https://github.com/gezada/tbh-easymarket" target="_blank" rel="noopener noreferrer" class="github-link" style="margin-top: 8px;">
@@ -72,14 +72,14 @@
       <div class="crypto-options">
         <div class="crypto-wallet">
           <div class="crypto-name">USDT / USDC / ETH (ERC20/BEP20)</div>
-          <div class="crypto-address" id="addr-eth">0x13592215AA4c28B868c9C47c116A09D487d9F850</div>
-          <button class="copy-btn" onclick="copyWallet('addr-eth')">COPY</button>
+          <div class="crypto-address" id="addr-eth" style="display: none;">0x13592215AA4c28B868c9C47c116A09D487d9F850</div>
+          <button class="copy-btn" onclick="copyWallet('addr-eth')">COPY HASH</button>
         </div>
         
         <div class="crypto-wallet">
           <div class="crypto-name">BITCOIN (BTC)</div>
-          <div class="crypto-address" id="addr-btc">bc1qyqzetmrng64krvt3sypaaz53r0p4m6vrghs9n0</div>
-          <button class="copy-btn" onclick="copyWallet('addr-btc')">COPY</button>
+          <div class="crypto-address" id="addr-btc" style="display: none;">bc1qyqzetmrng64krvt3sypaaz53r0p4m6vrghs9n0</div>
+          <button class="copy-btn" onclick="copyWallet('addr-btc')">COPY HASH</button>
         </div>
       </div>
     </section>
