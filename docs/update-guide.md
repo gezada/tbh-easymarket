@@ -1,6 +1,6 @@
-# Como Lançar uma Nova Versão (Update Skill)
+# Como Lançar uma Nova Versão
 
-Este documento descreve o processo exato para o Desenvolvedor ou a Inteligência Artificial disparar uma nova atualização oficial para todos os usuários do **TBH Easy Market**. 
+Este documento descreve o processo exato para o Desenvolvedor disparar uma nova atualização oficial para todos os usuários do **TBH Easy Market**. 
 
 O sistema foi arquitetado usando **Electron-Builder** + **GitHub Actions**. Quando uma nova "Tag" é enviada, o GitHub automaticamente constrói os executáveis (`.exe` Instalador e Portátil) e os publica na aba de Releases. O aplicativo nos computadores dos jogadores detecta a nova versão e exibe um banner de atualização automática.
 
@@ -40,6 +40,6 @@ git push --tags
 - **No Site:** A Landing Page hospedada no GitHub Pages detectará imediatamente a nova versão via API e mudará os botões de Download para o novo link.
 - **No App do Usuário:** Quem abrir o jogo a partir desse momento verá a fina barra vermelha no topo com a mensagem *"A new version of TBH Easy Market is available!"* e poderá baixar e instalar com um clique silencioso.
 
-## Notas Técnicas para a IA:
+## Notas Técnicas:
 - Não é necessário rodar o build localmente (`npm run dist`) a menos que você queira testar a compilação. O processo de lançamento oficial é **estritamente na nuvem** (CI/CD) para garantir arquivos limpos e consistentes.
 - Se a versão for apenas um teste que você não quer lançar para o público, **NÃO crie a tag `vX.X.X`**. Faça apenas commits normais.

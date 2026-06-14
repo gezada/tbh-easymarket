@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, shell, protocol, net } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

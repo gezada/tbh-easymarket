@@ -1,12 +1,6 @@
-# 🤖 Guia para a IA (ChatGPT, Claude, Gemini, etc.)
+# Guia de Setup (Desenvolvedor)
 
-> **Para o usuário:** se você é leigo e quer ajuda de uma IA pra instalar ou consertar este app,
-> copie este arquivo inteiro e cole no chat da IA, dizendo:
-> *"Me ajude a usar este projeto seguindo estas instruções."*
-
-> **Para a IA:** o usuário provavelmente **não sabe programar**. Seja paciente, dê um passo de cada
-> vez, espere ele confirmar antes de seguir, e nunca peça pra ele fazer algo perigoso. Leia tudo abaixo
-> antes de instruir qualquer coisa.
+> Siga estas instruções para compilar, diagnosticar ou entender a fundo o projeto TBH Easy Market.
 
 ---
 
@@ -38,7 +32,7 @@
 
 ---
 
-## Como o sistema funciona (pra você diagnosticar)
+## Como o sistema funciona
 
 ```
 Navegador (UI) ──> servidor Node (server.mjs, porta 5260)
@@ -68,20 +62,18 @@ Navegador (UI) ──> servidor Node (server.mjs, porta 5260)
 
 ---
 
-## Roteiro de instalação que você deve seguir com o usuário
+## Roteiro de instalação
 
-1. Pergunte se ele tem o Node instalado: peça pra rodar `node --version`.
-   - Se der erro, mande instalar de https://nodejs.org (versão LTS) e **reiniciar o PC**.
-2. Peça pra ele dar dois cliques em `tbh-easymarket.bat` (ou rodar `npm start` na pasta).
+1. Verifique se você tem o Node instalado: rode `node --version`.
+   - Se der erro, instale de https://nodejs.org (versão LTS) e **reinicie o PC**.
+2. Dê dois cliques em `tbh-easymarket.bat` (ou rode `npm start` na pasta).
 3. Confirme que abriu `http://localhost:5260` e que o baú apareceu.
-4. Se os materiais não tiverem nome, ofereça (opcional) instalar Python+UnityPy e rodar
+4. Se os materiais não tiverem nome, você pode (opcional) instalar Python+UnityPy e rodar
    `npm run extract-tables`.
-
----
 
 ## Erros comuns e como resolver
 
-| Sintoma | Causa | O que instruir |
+| Sintoma | Causa | O que fazer |
 |---|---|---|
 | `node` não é reconhecido | Node não instalado / PATH | Instalar Node LTS, reiniciar o PC |
 | `save do TBH não encontrado` | Save não existe | Abrir o jogo uma vez |
@@ -89,7 +81,6 @@ Navegador (UI) ──> servidor Node (server.mjs, porta 5260)
 | Porta 5260 ocupada | Outra instância rodando | Fechar a janela preta antiga, ou mudar `GSM_PORT` |
 | Materiais sem nome | Falta tabela de localização | `pip install UnityPy` + `npm run extract-tables` (opcional) |
 | Preço total parece errado | Steam respondeu em moeda da região | O app força USD (`country=US&currency=1`); apague `data/items-3678970.json` e reinicie pra repuxar |
-
 ---
 
 ## Se o jogo for atualizado e parar de funcionar
