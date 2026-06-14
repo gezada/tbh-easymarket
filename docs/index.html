@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,18 +21,18 @@
     </div>
 
     <header class="hero">
-      <h2>Chega de chutar o preço<br>dos seus <span>Equipamentos</span>.</h2>
-      <p class="subtitle">Descubra o valor real de mercado de todo o seu baú da Steam em um piscar de olhos. Sem complicação, sem planilhas chatas e 100% à prova de bans.</p>
+      <h2>Stop guessing the price<br>of your <span>Equipment</span>.</h2>
+      <p class="subtitle">Discover the real market value of your entire Steam stash in the blink of an eye. No hassle, no boring spreadsheets, and 100% ban-safe.</p>
       
       <div class="action-buttons">
-        <a id="btn-installer" href="#" class="btn btn-primary" aria-label="Baixar Instalador">
-          Baixar Instalador (Windows)
+        <a id="btn-installer" href="#" class="btn btn-primary" aria-label="Download Installer">
+          Download Installer (Windows)
         </a>
-        <a id="btn-portable" href="#" class="btn btn-secondary" aria-label="Baixar Portable">
-          Versão Portable (Não precisa instalar)
+        <a id="btn-portable" href="#" class="btn btn-secondary" aria-label="Download Portable">
+          Portable Version (No install required)
         </a>
       </div>
-      <div id="loading-state" class="loading-state">Lendo o Mercado...</div>
+      <div id="loading-state" class="loading-state">Fetching the latest release...</div>
     </header>
 
     <section class="features">
@@ -40,56 +40,56 @@
         <div class="icon-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
-        <h3>Preços em Tempo Real</h3>
-        <p>Lê as ordens de compra e a última venda diretamente da página oficial da Comunidade Steam.</p>
+        <h3>Real-Time Prices</h3>
+        <p>Reads buy orders and the last sold price directly from the official Steam Community Market.</p>
       </div>
       
       <div class="feature-card">
         <div class="icon-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         </div>
-        <h3>100% Seguro</h3>
-        <p>Apenas lê o seu arquivo local de Save. Sem logins, sem acesso à internet malicioso, totalmente "Ban-Safe".</p>
+        <h3>100% Secure</h3>
+        <p>It only reads your local save file. No logins required, no malicious network requests, completely "Ban-Safe".</p>
       </div>
       
       <div class="feature-card">
         <div class="icon-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
         </div>
-        <h3>Auto Atualizável</h3>
-        <p>O aplicativo detecta novas versões e se atualiza sozinho para você não perder nenhuma novidade.</p>
+        <h3>Auto-Updating</h3>
+        <p>The application detects new versions and updates itself seamlessly so you never miss a feature.</p>
       </div>
     </section>
 
     <!-- Support Section -->
     <section class="donate-section">
-      <h2>Gostou do Projeto?</h2>
-      <p>O Easy Market é gratuito e feito de fã para fã. Pague um café para o Dev copiando a carteira abaixo!</p>
+      <h2>Love the Project?</h2>
+      <p>Easy Market is 100% free and made by fans for fans. Buy the Dev a coffee by copying a wallet address below!</p>
       
       <div class="crypto-options">
         <div class="crypto-wallet">
           <div class="crypto-name">USDT / USDC / ETH (ERC20/BEP20)</div>
           <div class="crypto-address" id="addr-eth">0x13592215AA4c28B868c9C47c116A09D487d9F850</div>
-          <button class="copy-btn" onclick="copyWallet('addr-eth')">COPIAR</button>
+          <button class="copy-btn" onclick="copyWallet('addr-eth')">COPY</button>
         </div>
         
         <div class="crypto-wallet">
           <div class="crypto-name">BITCOIN (BTC)</div>
           <div class="crypto-address" id="addr-btc">bc1qyqzetmrng64krvt3sypaaz53r0p4m6vrghs9n0</div>
-          <button class="copy-btn" onclick="copyWallet('addr-btc')">COPIAR</button>
+          <button class="copy-btn" onclick="copyWallet('addr-btc')">COPY</button>
         </div>
       </div>
     </section>
 
     <footer>
-      <p>Desenvolvido pela comunidade. Projeto 100% Transparente.</p>
+      <p>Developed by the community. 100% Transparent Project.</p>
       <a href="https://github.com/gezada/tbh-easymarket" target="_blank" rel="noopener noreferrer" class="github-link">
-        [ VER CÓDIGO FONTE (GITHUB) ]
+        [ VIEW SOURCE CODE (GITHUB) ]
       </a>
     </footer>
   </main>
 
-  <div id="toast" class="toast">CARTEIRA COPIADA!</div>
+  <div id="toast" class="toast">WALLET COPIED!</div>
 
   <script src="app.js"></script>
   <script>
