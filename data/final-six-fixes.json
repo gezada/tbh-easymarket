@@ -1,0 +1,181 @@
+{
+  "baseState": {
+    "captionLeft": true,
+    "iconFill": {
+      "dw": 1,
+      "dh": 0
+    },
+    "currencyFirst": "AUD",
+    "unit": "Soulstone · $71.41 each",
+    "totalMain": "$2,409.54",
+    "totalSubCount": 0,
+    "stashHead": [
+      {
+        "text": "Item",
+        "align": "left"
+      },
+      {
+        "text": "Qty.",
+        "align": "right"
+      },
+      {
+        "text": "Sell ▼",
+        "align": "right"
+      },
+      {
+        "text": "Buy",
+        "align": "right"
+      },
+      {
+        "text": "Latest",
+        "align": "right"
+      }
+    ],
+    "marketHead": [
+      {
+        "text": "#",
+        "align": "right"
+      },
+      {
+        "text": "",
+        "align": "right"
+      },
+      {
+        "text": "Item",
+        "align": "left"
+      },
+      {
+        "text": "Sell (USD) ▼",
+        "align": "right"
+      },
+      {
+        "text": "Buy",
+        "align": "right"
+      },
+      {
+        "text": "Latest",
+        "align": "right"
+      },
+      {
+        "text": "For Sale",
+        "align": "right"
+      },
+      {
+        "text": "Steam",
+        "align": "center"
+      }
+    ],
+    "overflow": 0
+  },
+  "eur": {
+    "unit": "Soulstone · €61.74 each",
+    "totalMain": "€2,083.12",
+    "totalSubCount": 0
+  },
+  "itemAsc": {
+    "head": "Item ▲",
+    "names": [
+      "Amethyst",
+      "Ancient Tree Sap",
+      "Black Pearl",
+      "Bronze Ingot",
+      "Coral Piece"
+    ],
+    "qty": [
+      "x1",
+      "x1",
+      "x1",
+      "x1",
+      "x1"
+    ]
+  },
+  "itemDesc": {
+    "head": "Item ▼",
+    "names": [
+      "Wyvern Claw",
+      "Void Iron",
+      "Stardust Ingot",
+      "Soulstone - Torment",
+      "Soulstone - Hell"
+    ],
+    "qty": [
+      "x1",
+      "x1",
+      "x4",
+      "x20",
+      "x16"
+    ]
+  },
+  "qtyDesc": {
+    "head": "Qty. ▼",
+    "names": [
+      "Soulstone - Torment",
+      "Soulstone - Hell",
+      "Gold Ingot",
+      "Stardust Ingot",
+      "Iron Ingot"
+    ],
+    "qty": [
+      "x20",
+      "x16",
+      "x4",
+      "x4",
+      "x2"
+    ]
+  },
+  "buyDesc": {
+    "head": "Buy ▼",
+    "names": [
+      "Soulstone - Hell",
+      "Soulstone - Torment",
+      "Gold Ingot",
+      "Stardust Ingot",
+      "Iron Ingot"
+    ],
+    "qty": [
+      "x16",
+      "x20",
+      "x4",
+      "x4",
+      "x2"
+    ]
+  },
+  "latestDesc": {
+    "head": "Latest ▼",
+    "names": [
+      "Soulstone - Torment",
+      "Soulstone - Hell",
+      "Stardust Ingot",
+      "Gold Ingot",
+      "Iron Ingot"
+    ],
+    "qty": [
+      "x20",
+      "x16",
+      "x4",
+      "x4",
+      "x2"
+    ]
+  },
+  "sellDesc": {
+    "head": "Sell ▼",
+    "names": [
+      "Soulstone - Hell",
+      "Soulstone - Torment",
+      "Sage Staff (Legendary) A",
+      "Stardust Ingot",
+      "Elite Shield (Arcana) A"
+    ],
+    "qty": [
+      "x16",
+      "x20",
+      "x2",
+      "x4",
+      "x1"
+    ]
+  },
+  "mobile": {
+    "overflow": 0
+  },
+  "errors": []
+}

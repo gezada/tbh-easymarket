@@ -1,0 +1,53 @@
+{
+  "early": {
+    "label": "EUR",
+    "usdActive": false,
+    "otherActive": true
+  },
+  "desktop": {
+    "icon": {
+      "loaded": true,
+      "width": 512
+    },
+    "offMarket": "SHOW OFF-MARKET ITEMS\n(45)",
+    "caption": "Price type",
+    "stashHeads": [
+      "Item",
+      "Qty.",
+      "Sell",
+      "Buy",
+      "Latest"
+    ],
+    "marketHeads": [
+      "#",
+      "",
+      "Item",
+      "Sell (EUR) ▼",
+      "Buy",
+      "Latest",
+      "For Sale",
+      "Steam"
+    ],
+    "stashCells": 3,
+    "marketCells": 3,
+    "summary": "Equipment\n€159.83\nMaterials\n€1,877.12",
+    "summaryHasSecondary": false,
+    "overflow": 0
+  },
+  "gearSummary": {
+    "text": "",
+    "display": "none"
+  },
+  "materialSummary": {
+    "text": "",
+    "display": "none"
+  },
+  "refreshDetailRequests": 2,
+  "mobile": {
+    "overflow": 0,
+    "bodyOverflow": "clip",
+    "stashColumns": "81.9922px 61.9922px 61.9922px 61.9922px",
+    "marketVisible": true
+  },
+  "errors": []
+}

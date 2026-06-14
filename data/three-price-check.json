@@ -1,0 +1,40 @@
+{
+  "sell": {
+    "label": "Sell estimate",
+    "main": "$2,091.41",
+    "secondary": "BUY$152.97\nLATEST$772.73"
+  },
+  "buy": {
+    "label": "Buy estimate",
+    "main": "$152.97",
+    "secondary": "SELL$2,091.41\nLATEST$772.73"
+  },
+  "latest": {
+    "label": "Latest estimate",
+    "main": "$772.73",
+    "secondary": "SELL$2,091.41\nBUY$152.97"
+  },
+  "layout": {
+    "stashRows": 23,
+    "stashPriceCells": 3,
+    "marketRows": 10,
+    "marketPriceCells": 3,
+    "headers": [
+      "#",
+      "",
+      "Item",
+      "Sell (USD) ▼",
+      "Buy",
+      "Latest",
+      "For Sale",
+      "Steam"
+    ],
+    "overflow": 0
+  },
+  "mobile": {
+    "overflow": 5,
+    "stashColumns": "81.9922px 61.9922px 61.9922px 61.9922px",
+    "marketVisible": true
+  },
+  "errors": []
+}

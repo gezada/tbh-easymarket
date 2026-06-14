@@ -1,0 +1,35 @@
+[
+  {
+    "width": 1920,
+    "state": {
+      "innerWidth": 1920,
+      "clientWidth": 1920,
+      "scrollWidth": 1920,
+      "overflow": 0,
+      "headerPseudoWidth": "1599.99px",
+      "footerPseudoWidth": "1599.99px"
+    }
+  },
+  {
+    "width": 1440,
+    "state": {
+      "innerWidth": 1440,
+      "clientWidth": 1440,
+      "scrollWidth": 1440,
+      "overflow": 0,
+      "headerPseudoWidth": "1199.99px",
+      "footerPseudoWidth": "1199.99px"
+    }
+  },
+  {
+    "width": 390,
+    "state": {
+      "innerWidth": 390,
+      "clientWidth": 390,
+      "scrollWidth": 390,
+      "overflow": 0,
+      "headerPseudoWidth": "324.987px",
+      "footerPseudoWidth": "324.987px"
+    }
+  }
+]

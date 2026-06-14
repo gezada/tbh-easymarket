@@ -1,0 +1,13 @@
+{
+  "desktopOverflow": 0,
+  "mobileOverflow": 0,
+  "marketRows": 0,
+  "hasSell": false,
+  "hasBuy": false,
+  "hasLatest": false,
+  "duplicateLevel": false,
+  "portuguese": false,
+  "usdMarket": false,
+  "usdStash": false,
+  "errors": []
+}

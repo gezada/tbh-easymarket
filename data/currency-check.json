@@ -1,0 +1,34 @@
+{
+  "initial": {
+    "saved": null,
+    "usdActive": true,
+    "label": "Other",
+    "header": "Market Prices (USD) ▼",
+    "main": "US$ 1.585,54",
+    "sub": "US$ 2,99",
+    "overflow": 0
+  },
+  "menu": {
+    "open": true,
+    "count": 29,
+    "scrollable": true
+  },
+  "eur": {
+    "saved": "EUR",
+    "label": "EUR",
+    "triggerActive": true,
+    "header": "Market Prices (EUR) ▼",
+    "main": "€ 1.370,74",
+    "buy": "€ 2,58"
+  },
+  "persisted": {
+    "label": "EUR",
+    "header": "Market Prices (EUR) ▼"
+  },
+  "mobile": {
+    "overflow": 0,
+    "usdVisible": true,
+    "menuVisible": true
+  },
+  "errors": []
+}

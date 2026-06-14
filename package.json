@@ -1,0 +1,31 @@
+{
+  "name": "tbh-easy-market",
+  "version": "1.0.0",
+  "description": "TBH Easy Market: valor do baú e preços do Mercado Steam do TBH: Task Bar Hero. 100% read-only.",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "extract-tables": "node scripts/extract-tbh-tables.mjs",
+    "build:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-distribution.ps1"
+  },
+  "keywords": [
+    "steam",
+    "market",
+    "taskbar-hero",
+    "tbh",
+    "inventory",
+    "price",
+    "eusouogiba"
+  ],
+  "author": "EuSouOGiba (https://eusouogiba.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/lezards/giba-steam-market",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3"
+  }
+}

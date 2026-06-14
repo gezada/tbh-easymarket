@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>TBH Easy Market</title>
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#111416; --bg-deep:#0a0c0d; --panel:#191d21; --panel2:#20252b;
+    --panel3:#272d33; --line:#3a4148; --line-soft:#292f34;
+    --text:#e7e2d5; --muted:#8f969d; --gold:#e4a928; --gold-light:#ffd45d;
+    --red:#9d1d24; --red-dark:#541116; --red-bright:#c82d34;
+    --green:#64bc56; --blue:#54a1dc; --orange:#d98527; --shadow:0 16px 44px rgba(0,0,0,.42);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{overflow-x:clip;scrollbar-color:#4a3030 var(--bg-deep)}
+  body{width:80%;min-height:100vh;margin:0 auto;color:var(--text);font:14px/1.45 "Segoe UI",Arial,sans-serif;background:
+    linear-gradient(rgba(14,16,17,.88),rgba(14,16,17,.96)),
+    repeating-linear-gradient(135deg,#222 0,#222 2px,#181a1c 2px,#181a1c 8px);
+    background-attachment:fixed;zoom:1.25}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:
+    linear-gradient(90deg,transparent 49%,rgba(228,169,40,.09) 50%,transparent 51%),
+    linear-gradient(transparent 49%,rgba(228,169,40,.06) 50%,transparent 51%);background-size:84px 84px}
+  button,input{font:inherit}
+  button{color:var(--text);cursor:pointer}
+  header{position:sticky;top:0;z-index:20;background:transparent}
+  header::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:80vw;transform:translateX(-50%);
+    background:linear-gradient(180deg,#18100f 0%,#111416f2 100%);border-bottom:1px solid #2b1716;
+    box-shadow:0 8px 24px rgba(0,0,0,.45)}
+  .topbar{max-width:1320px;margin:auto;min-height:58px;padding:7px 18px;display:flex;align-items:center;gap:12px}
+  #homeButton{display:flex;align-items:center;min-width:max-content;padding:0;border:1px solid #8b5319;background:linear-gradient(180deg,#9c4b0c,#562307);
+    box-shadow:inset 0 0 0 2px #d58b1e,inset 0 0 0 4px #532107,4px 4px 0 #080909;transition:filter .15s ease,transform .15s ease}
+  #homeButton:not(:disabled){cursor:pointer}#homeButton:not(:disabled):hover{filter:brightness(1.12)}#homeButton:not(:disabled):active{transform:translateY(1px)}
+  #homeButton:disabled{cursor:default}
+  .brand-icon{display:grid;place-items:center;width:46px;height:46px;margin:3px;background:#111619;border-right:1px solid #a76313;
+    overflow:hidden;color:var(--gold-light);font:800 11px/1 Consolas,monospace;text-shadow:2px 2px #000}
+  .brand-icon img{display:block;width:100%;height:100%;object-fit:cover}
+  .brand-name{padding:0 14px 0 10px;color:#fff3c8;font:800 18px/1.05 Georgia,serif;text-align:left;text-shadow:2px 2px #4b1900}
+  .brand-name em{display:block;color:var(--gold-light);font:700 9px/1.4 Consolas,monospace;letter-spacing:.11em;text-transform:uppercase}
+  #search{flex:1;min-width:210px;height:42px;padding:0 14px;color:#ddd;background:#0d1012;border:1px solid #3d454c;
+    border-radius:0;outline:none;box-shadow:inset 3px 3px 0 rgba(0,0,0,.35)}
+  #search:focus{border-color:var(--gold);box-shadow:inset 3px 3px 0 rgba(0,0,0,.35),0 0 0 1px #6a4215}
+  #search::placeholder{color:#687078}
+  #search::-webkit-search-cancel-button{cursor:pointer}
+  .head-actions{display:flex;align-items:center;gap:8px}
+  .currency-switch{display:flex;border:1px solid #4c5359;background:#0e1113;padding:3px;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+  .currency-switch button{min-width:50px;padding:7px 10px;border:0;background:transparent;color:#858d94;font:700 11px Consolas,monospace}
+  .currency-switch button:hover{color:#fff0bd;background:#2a2420}
+  .currency-switch button.active{color:#16120a;background:var(--gold);box-shadow:inset 0 -2px #8d5b10}
+  .currency-menu-wrap{position:relative;display:flex}
+  #currencyMenuButton{display:flex;align-items:center;justify-content:center;gap:7px;min-width:72px}
+  #currencyMenuButton .chevron{font-size:9px;transition:transform .15s}
+  #currencyMenuButton[aria-expanded="true"] .chevron{transform:rotate(180deg)}
+  .currency-menu{position:absolute;z-index:30;top:calc(100% + 8px);right:-3px;width:230px;max-height:310px;overflow-y:auto;padding:5px;
+    background:#111518;border:1px solid #555d63;box-shadow:6px 7px 0 rgba(0,0,0,.55)}
+  .currency-menu[hidden]{display:none}
+  .currency-option{display:flex!important;justify-content:space-between!important;width:100%;min-width:0!important;padding:8px 9px!important;text-align:left}
+  .currency-option span{color:#69727a;font-weight:400}.currency-option.active span{color:#4d3b12}
+  #refresh{height:42px;padding:0 14px;border:1px solid #6c2729;background:linear-gradient(#9d252b,#64151a);font-weight:700;
+    box-shadow:inset 0 1px #d94a50,3px 3px 0 rgba(0,0,0,.35)}
+  #refresh:hover{background:linear-gradient(#b52a31,#77191f);border-color:#b33a3e}
+  #refresh:disabled{opacity:.5;cursor:wait}
+  main{position:relative;max-width:1320px;margin:0 auto;padding:22px 18px 42px}
+  .section-bar{position:relative;display:flex;align-items:center;justify-content:center;min-height:42px;padding:7px 20px;margin:-1px -1px 0;
+    color:var(--gold-light);background:linear-gradient(180deg,#a51e25,#6e1419);border:1px solid #2a080a;border-bottom-color:#d18c25;
+    font:800 13px Georgia,serif;letter-spacing:.06em;text-transform:uppercase;text-shadow:2px 2px #3b090b}
+  #stashBar{cursor:pointer}
+  #stashToggle{position:absolute;right:18px;width:10px;height:10px;border-right:2px solid var(--gold-light);border-bottom:2px solid var(--gold-light);
+    transform:rotate(45deg);transition:transform .18s ease;filter:drop-shadow(1px 1px #3b090b)}
+  #stashToggle.open{transform:rotate(225deg) translate(-2px,-2px)}
+  #stash{border:1px solid #41484e;background:var(--panel);box-shadow:var(--shadow);margin-bottom:22px;transition:border-color .18s ease,box-shadow .18s ease}
+  #stash:not(.open):hover{border-color:#76632e;box-shadow:var(--shadow),0 0 14px rgba(255,212,93,.14)}
+  #stashHead{display:flex;align-items:center;gap:14px;min-height:78px;padding:14px 18px;background:
+    linear-gradient(180deg,rgba(97,18,22,.34),transparent 66%),var(--panel);border-bottom:1px solid var(--line);cursor:pointer}
+  #stashHead h2{font:800 22px Georgia,serif;color:#f2e8d2;text-shadow:2px 2px #000}
+  .readonly{padding:3px 7px;color:var(--gold);border:1px solid #654a22;background:#18140e;font:700 9px Consolas,monospace;text-transform:uppercase}
+  .meta{color:var(--muted);font-size:11px}
+  #stashCount{margin-right:auto}
+  .total-box{text-align:right;min-width:310px}
+  .total-label{display:block;color:#97918a;font:700 9px Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
+  .money-main{display:block;color:var(--gold-light);font:800 24px/1.15 Georgia,serif;text-shadow:2px 2px #000}
+  .money-sub{display:block;color:#9ba1a6;font:11px Consolas,monospace;margin-top:2px}
+  .estimate-tabs{display:flex;justify-content:flex-end;gap:3px;margin-bottom:5px}
+  .estimate-tabs button{padding:3px 7px;color:#7f878d;background:#111416;border:1px solid #363d42;font:700 8px Consolas,monospace;letter-spacing:.06em}
+  .estimate-tabs button:hover{color:#f1d28a;border-color:#8c5a22}.estimate-tabs button.active{color:#211605;background:var(--gold);border-color:#e3a429}
+  .unit-sort-tabs{justify-content:flex-start;margin:0}.unit-sort-tabs[hidden]{display:none}
+  .estimate-caption{align-self:center;margin-right:5px;color:#777f85;font:700 8px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+  .estimate-secondary{display:flex;justify-content:flex-end;gap:12px;margin-top:4px;color:#7f878d;font:8px Consolas,monospace;text-transform:uppercase}
+  .estimate-secondary b{margin-left:3px;color:#aeb5ba;font-size:9px;text-transform:none}
+  .stash-controls{padding:13px 18px;background:#15191c;border-bottom:1px solid var(--line);display:grid;gap:11px}
+  .filter-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .stash-clear{margin-left:auto}
+  .filter-label{min-width:56px;color:var(--orange);font:800 10px Consolas,monospace;text-transform:uppercase;letter-spacing:.08em}
+  .filter-btn{padding:6px 12px;border:1px solid #424a51;background:#20252a;color:#a9afb4;font:700 10px Consolas,monospace;text-transform:uppercase}
+  .filter-btn:hover{border-color:#8c5a22;color:#f5d88e}
+  .filter-btn.active{color:#211605;border-color:#e3a429;background:linear-gradient(#f2bc43,#bd7818);box-shadow:inset 0 -2px #80500f}
+  #levelFilter{display:flex;align-items:center;gap:12px;padding:8px 10px;border:1px solid #343b41;background:#101315}
+  #levelFilter[hidden]{display:none}
+  #levelLabel{min-width:58px;color:var(--gold-light);font:700 11px Consolas,monospace}
+  .dual-range{position:relative;flex:1;min-width:180px;height:20px;touch-action:none;user-select:none;cursor:ew-resize}
+  .range-rail,.range-fill{position:absolute;top:8px;left:0;right:0;height:5px;border:1px solid #514331;background:#292d2f}
+  .range-fill{left:0;right:0;border-color:#b77b22;background:linear-gradient(90deg,#c57d19,#f2c34f)}
+  .dual-range input{position:absolute;inset:0;width:100%;height:20px;margin:0;background:none;appearance:none;pointer-events:none}
+  .dual-range input::-webkit-slider-thumb{width:13px;height:18px;appearance:none;pointer-events:auto;background:#e1aa36;border:2px solid #24180a;border-radius:0;cursor:ew-resize;box-shadow:1px 1px #000}
+  .dual-range input::-moz-range-thumb{width:11px;height:16px;pointer-events:auto;background:#e1aa36;border:2px solid #24180a;border-radius:0;cursor:ew-resize}
+  .stash-summary{display:flex;align-items:center;gap:8px;min-height:50px;box-sizing:border-box;flex-wrap:wrap;padding:9px 18px;color:#888f95;background:#111416;border-bottom:1px solid var(--line-soft);font:10px Consolas,monospace}
+  .stash-summary-options{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .inline-label{color:var(--orange);font:800 9px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+  .compact-segment{display:flex;gap:3px}.compact-segment button{height:27px;padding:0 9px;border:1px solid #424a51;background:#20252a;color:#a9afb4;font:700 9px Consolas,monospace;text-transform:uppercase}
+  .compact-segment button:hover{border-color:#8c5a22;color:#f5d88e}.compact-segment button.active{color:#211605;border-color:#e3a429;background:linear-gradient(#f2bc43,#bd7818);box-shadow:inset 0 -2px #80500f}
+  #stashBody{background:#171b1e}
+  .srow{display:grid;grid-template-columns:24px 40px minmax(160px,1fr) 40px repeat(3,minmax(92px,110px)) 24px;align-items:center;gap:11px;padding:9px 18px;border-bottom:1px solid #292f34;border-left:3px solid transparent}
+  .srow:hover{background:#1e2327;border-left-color:var(--red-bright)}
+  .srow:last-child{border-bottom:0}
+  .kind{display:grid;place-items:center;width:24px;height:24px;color:var(--gold);background:#101315;border:1px solid #353c42;font-size:12px}
+  .stash-icon{position:relative;width:40px;height:40px;background:linear-gradient(135deg,#111,#262b2f);border:1px solid var(--rarity-color,#444b50)}
+  .stash-icon img{display:block;width:100%;height:100%;object-fit:contain;border:0;image-rendering:auto}
+  .stash-icon .unlisted-icon{width:100%;height:100%;border:0}
+  .stash-visibility{position:absolute;inset:0;display:grid;place-items:center;padding:0;color:#f3d36f;background:rgba(8,10,11,.78);border:0;opacity:0;transition:opacity .14s ease}
+  .stash-icon:hover .stash-visibility,.stash-visibility:focus,.srow.excluded .stash-visibility{opacity:1}
+  .stash-visibility.visibility-refresh{opacity:1;transition:none}
+  .stash-visibility svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(1px 1px #000)}
+  .stash-visibility .visibility-off-icon{transform:translateY(2px)}
+  .srow.excluded .stash-icon img{opacity:.45;filter:saturate(.45)}
+  .srow.excluded .price-cell .price-value,.srow.excluded .price-cell .price-sub{text-decoration:line-through;text-decoration-thickness:1px;opacity:.58}
+  .unlisted-icon{display:grid;place-items:center;width:40px;height:40px;color:#777f85;background:#111416;border:1px dashed #444b50;font:800 15px Consolas,monospace}
+  .sn{min-width:0}.sn-title{display:flex;align-items:center;gap:7px;min-width:0}.sn-title b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.sn small{color:#80888e;font-size:11px}
+  .equipped-tag{flex:0 0 auto;padding:2px 5px;color:#211605;background:#e4a928;border:1px solid #ffd45d;font:800 7px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 -1px #9b6413}
+  .qty{min-width:40px;text-align:right;color:#b2b7bb;font:700 11px Consolas,monospace}
+  .stash-price-head{display:grid;grid-template-columns:24px 40px minmax(160px,1fr) 40px repeat(3,minmax(92px,110px)) 24px;gap:11px;padding:8px 18px;color:#c88d2c;background:#121517;border-bottom:1px solid #4a3b2b;font:800 10px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+  .stash-price-head button{border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;text-align:right;white-space:nowrap}
+  .stash-price-head button:hover{color:var(--gold-light)}.stash-price-head .item-head{grid-column:3;text-align:left}.stash-price-head .qty-head{grid-column:4}.stash-price-head .buy-head{grid-column:5}.stash-price-head .latest-head{grid-column:6}.stash-price-head .sell-head{grid-column:7}
+  .price-cell{text-align:right;min-width:0;white-space:nowrap}.price-cell .price-value{display:block;overflow:hidden;text-overflow:ellipsis;color:#b9c0c4;font:700 10px Consolas,monospace}.price-cell .price-sub{display:block;margin-top:2px;color:#666e74;font:8px Consolas,monospace}.price-cell.sell .price-value{color:#efc558;font:800 13px Georgia,serif}.price-cell.buy .price-value{color:#72b9e8}.price-cell.latest .price-value{color:#b5a9d8}
+  .steam-link{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;color:#a8b2b9;background:#101315;border:1px solid #383f44;text-decoration:none}
+  .steam-link:hover{color:#fff;border-color:#5796c9;background:#17334a}.steam-link svg{width:14px;height:14px;fill:currentColor}
+  .steam-link-space{width:24px;height:24px}.money-na{display:block;color:#777f85;font:800 13px Georgia,serif}
+  .empty{padding:26px;text-align:center;color:#858c92;font:12px Consolas,monospace}
+  .market-panel{border:1px solid #41484e;background:var(--panel);box-shadow:var(--shadow)}
+  .market-controls{padding:13px 18px;background:#14181b;border-bottom:1px solid #3b4248}
+  .market-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .market-filter-row select,.filter-line select,.stash-summary select{height:31px;padding:0 30px 0 9px;color:#bec3c7;background-color:#20252a;border:1px solid #424a51;
+    border-radius:0;outline:none;font:700 10px Consolas,monospace;text-transform:uppercase;cursor:pointer}
+  .market-filter-row select:focus,.filter-line select:focus,.stash-summary select:focus{border-color:#a46c25}.market-filter-row select:disabled,.filter-line select:disabled,.stash-summary select:disabled{opacity:.4}
+  .market-field{display:flex;align-items:center;gap:6px;color:#8e959a;font:700 9px Consolas,monospace;text-transform:uppercase}
+  .multi-select{position:relative;width:168px}.multi-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;height:31px;padding:0 9px;color:#bec3c7;background:#20252a;border:1px solid #424a51;font:700 10px Consolas,monospace;text-transform:uppercase}
+  .multi-trigger:hover,.multi-trigger:focus{color:#f5d88e;border-color:#a46c25;outline:none}.multi-trigger .chevron{font-size:8px;transition:transform .15s}.multi-trigger[aria-expanded="true"] .chevron{transform:rotate(180deg)}
+  .multi-menu{position:absolute;z-index:18;top:calc(100% + 5px);left:0;width:220px;max-height:280px;overflow-y:auto;padding:5px;background:#111518;border:1px solid #555d63;box-shadow:6px 7px 0 rgba(0,0,0,.55)}
+  #stashRarityMenu,#marketRarityMenu{max-height:310px}
+  .multi-menu[hidden]{display:none}.multi-option{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;color:#aeb4b8;background:transparent;border:0;text-align:left;font:700 9px Consolas,monospace;text-transform:uppercase;cursor:pointer}.multi-option:hover{color:#f5d88e;background:#20252a}.multi-option input{accent-color:var(--gold);cursor:pointer}
+  .rarity-option-text{text-shadow:1px 1px #050606}
+  .market-field[hidden],#marketLevelFilter[hidden]{display:none!important}
+  #marketLevelFilter{display:flex;align-items:center;gap:12px;margin-top:10px;padding:8px 10px;border:1px solid #343b41;background:#101315}
+  #marketLevelLabel{min-width:58px;color:var(--gold-light);font:700 11px Consolas,monospace}
+  .market-check{display:flex;align-items:center;gap:6px;padding:5px 8px;color:#a9afb4;border:1px solid #353c42;background:#101315;
+    font:700 9px Consolas,monospace;text-transform:uppercase;cursor:pointer}
+  .market-check input{accent-color:var(--gold)}
+  .toggle-check[hidden]{display:none!important}.toggle-check input{position:absolute;opacity:0;pointer-events:none}
+  .toggle-track{position:relative;width:25px;height:13px;background:#3b4247;border:1px solid #596168;transition:.16s}
+  .toggle-track::after{content:"";position:absolute;top:2px;left:2px;width:7px;height:7px;background:#8d959b;transition:.16s}
+  .toggle-check input:checked+.toggle-track{background:#8b5b12;border-color:#d89a25}.toggle-check input:checked+.toggle-track::after{left:14px;background:#ffd45d}
+  #marketClear,#stashClear{height:31px;padding:0 10px;color:#aab0b4;background:#20252a;border:1px solid #424a51;font:700 9px Consolas,monospace;text-transform:uppercase}
+  #marketClear{margin-left:auto}#stashClear:hover,#marketClear:hover{color:#f1d28a;border-color:#8c5a22}
+  .market-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding-top:9px;border-top:1px solid #292f34;
+    color:#858c92;font:10px Consolas,monospace}
+  .page-size{display:flex;align-items:center;gap:7px;text-transform:uppercase}
+  .market-filter-row select,.filter-line select,.stash-summary select,.page-size select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#aab0b4 50%),linear-gradient(135deg,#aab0b4 50%,transparent 50%);background-position:calc(100% - 12px) 50%,calc(100% - 8px) 50%;background-size:4px 4px,4px 4px;background-repeat:no-repeat}
+  .market-filter-row select option,.filter-line select option,.stash-summary select option,.page-size select option{cursor:pointer}
+  .page-size select{height:28px;padding:0 28px 0 8px;color:#e1c274;background-color:#101315;border:1px solid #3b4248;border-radius:0;font:700 10px Consolas,monospace;cursor:pointer}
+  #status{padding:38px;text-align:center;color:#899096;font:12px Consolas,monospace}
+  .spin{display:inline-block;width:16px;height:16px;margin-right:8px;border:2px solid #474e53;border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-4px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .table-wrap{overflow-x:hidden}
+  table{width:100%;table-layout:fixed;border-collapse:collapse;background:#171b1e}
+  #tbl thead tr,#tbl tr.item{display:grid;grid-template-columns:24px 40px minmax(160px,1fr) 40px repeat(3,minmax(92px,110px)) 24px;align-items:center;gap:11px;padding-left:18px;padding-right:18px}
+  #tbl thead tr{padding-top:8px;padding-bottom:8px;border-bottom:1px solid #4a3b2b;background:#121517}
+  #tbl tr.item{padding-top:9px;padding-bottom:9px;border-bottom:1px solid #2a3035}
+  th{position:static;padding:0;text-align:right;color:#c88d2c;background:#121517;
+    font:800 10px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+  th:hover{color:var(--gold-light)}
+  th:nth-child(3){text-align:left}
+  td{min-width:0;padding:0;vertical-align:middle}
+  tr.item:hover{background:#20252a}
+  tr.item:last-child{border-bottom:0}
+  .market-kind-cell{text-align:center}
+  .market-kind-cell .kind{margin:auto}
+  .ic{display:block;width:40px;height:40px;object-fit:contain;background:linear-gradient(135deg,#111,#2b3034);border:1px solid #454c51}
+  .nm{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.nm a{color:inherit;text-decoration:none}.nm a:hover{color:var(--gold-light)}
+  .tp{margin-top:2px;color:#7e858b;font-size:11px}.market-rank{color:#697077;font:10px Consolas,monospace}
+  .market-price{text-align:right}.market-price .price-cell{width:100%}
+  .ls{color:#969da2;font:11px Consolas,monospace;text-align:right}.steam-cell{text-align:center}
+  .market-pager{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#111416;border-top:1px solid #333a40}
+  .market-pager[hidden]{display:none}
+  .market-pager button{min-width:34px;height:29px;padding:0 9px;color:#aeb4b8;background:#20252a;border:1px solid #41494f;font:700 10px Consolas,monospace}
+  .market-pager button:hover:not(:disabled){color:#211605;background:var(--gold);border-color:#d79b25}
+  .market-pager button:disabled{opacity:.35;cursor:default}
+  #pageInfo{min-width:90px;text-align:center;color:#d5b86f;font:700 10px Consolas,monospace}
+  footer{position:relative;max-width:1320px;margin:28px auto 0;padding:18px;text-align:center;color:#858c92;font:10px Consolas,monospace}
+  footer::before{content:"";position:absolute;top:0;left:50%;width:80vw;transform:translateX(-50%);border-top:1px solid #3a4148}
+  footer a{color:var(--gold);text-decoration:none}footer a:hover{color:var(--gold-light);text-decoration:underline}
+  ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#0d1012}::-webkit-scrollbar-thumb{background:#5b3331;border:2px solid #0d1012}
+  @media(max-width:1025px){
+    .topbar{flex-wrap:wrap}.brand-name{font-size:16px}#search{order:3;flex-basis:100%}.head-actions{margin-left:auto}
+    .total-box{min-width:270px}.money-main{font-size:20px}
+  }
+  @media(max-width:775px){
+    body{width:100%;zoom:1}header::before,footer::before{width:100vw}
+    main{padding:14px 8px 28px}.topbar{padding:6px 8px}
+    .brand-icon{width:40px;height:40px}.brand-name{padding:0 10px}.currency-switch button{min-width:42px;padding:6px}
+    #refresh{padding:0 10px}.section-bar{padding-left:46px;padding-right:46px}
+    #stashHead{align-items:flex-start;flex-wrap:wrap;padding:12px}.total-box{width:100%;text-align:left}.estimate-tabs,.estimate-secondary{justify-content:flex-start}.stash-controls{padding:10px}
+    .market-controls{padding:10px}.market-filter-row{align-items:stretch}.market-field{flex:1 1 45%;display:grid;gap:4px}.market-field select,.market-field .multi-select{width:100%}.filter-line .market-field{flex:1 1 45%;display:grid;gap:4px}.filter-line .market-field select,.filter-line .market-field .multi-select{width:100%}.stash-clear{margin-left:0;width:100%}.stash-summary-options{width:100%}
+    .market-toolbar{align-items:flex-start;flex-direction:column}
+    .stash-price-head{grid-template-columns:minmax(82px,1fr) repeat(3,62px);gap:5px;padding:7px 8px}.stash-price-head .item-head{grid-column:1}.stash-price-head .qty-head{display:none}.stash-price-head .buy-head{grid-column:2}.stash-price-head .latest-head{grid-column:3}.stash-price-head .sell-head{grid-column:4}
+    .srow{grid-template-columns:minmax(82px,1fr) repeat(3,62px);gap:5px;padding:8px}.kind,.stash-icon,.unlisted-icon,.qty,.srow>.steam-link,.steam-link-space{display:none}.sn{grid-column:1}.sn small{font-size:9px}.price-cell{font-size:8px}.price-cell.sell .price-value{font-size:10px}.price-cell .price-sub,.price-date{display:none}
+    #tbl thead tr,#tbl tr.item{grid-template-columns:42px minmax(82px,1fr) repeat(3,62px);gap:5px;padding-left:8px;padding-right:8px}.market-kind-cell,.ls,.steam-cell{display:none}.ic{width:34px;height:34px;margin:auto}
+    .market-price{font-size:8px}.market-price.sell .price-value{font-size:10px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <button id="homeButton" type="button" title="Back to top" aria-label="Back to top" disabled><span class="brand-icon"><img src="/icon/tbh-easymarket-icon.svg" alt="TBH Easy Market"></span><span class="brand-name">Easy Market<em>Task Bar Hero</em></span></button>
+    <input id="search" type="search" placeholder="Search market items..." autofocus>
+    <div class="head-actions">
+      <div class="currency-switch" aria-label="Primary currency">
+        <button id="usdCurrency" type="button" class="active" data-currency="USD" aria-pressed="true">USD</button>
+        <div class="currency-menu-wrap">
+          <button id="currencyMenuButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="currencyMenuLabel">Other</span><span class="chevron">▼</span></button>
+          <div id="currencyMenu" class="currency-menu" role="listbox" aria-label="Choose another currency" hidden></div>
+        </div>
+      </div>
+      <script>
+        (()=>{try{const code=localStorage.getItem('tbh_currency_v2');if(code&&code!=='USD'&&/^[A-Z]{3}$/.test(code)){document.getElementById('usdCurrency').classList.remove('active');document.getElementById('usdCurrency').setAttribute('aria-pressed','false');document.getElementById('currencyMenuButton').classList.add('active');document.getElementById('currencyMenuButton').setAttribute('aria-pressed','true');document.getElementById('currencyMenuLabel').textContent=code}}catch{}})();
+      </script>
+      <button id="refresh" title="Refresh Steam Market and reload My Stash">Refresh</button>
+    </div>
+  </div>
+</header>
+<main>
+  <section id="stash" hidden>
+    <div class="section-bar" id="stashBar">My Stash<span id="stashToggle" aria-hidden="true"></span></div>
+    <div id="stashHead" role="button" tabindex="0" aria-expanded="false">
+      <h2>Inventory</h2><span class="readonly">Read only</span>
+      <span class="meta" id="stashCount"></span>
+      <div class="total-box">
+        <div class="estimate-tabs" aria-label="Primary inventory estimate">
+          <span class="estimate-caption">Price type:</span>
+          <button type="button" data-estimate="buy">Buy</button>
+          <button type="button" data-estimate="latest">Latest</button>
+          <button class="active" type="button" data-estimate="sell">Sell</button>
+        </div>
+        <span class="total-label" id="totalLabel">Sell estimate</span>
+        <div id="stashTotal"></div>
+      </div>
+    </div>
+    <div id="stashContent" style="display:none">
+      <div class="stash-controls">
+        <div class="filter-line">
+          <span class="filter-label">Category</span>
+          <button class="filter-btn active" type="button" data-stash-filter="all">All</button>
+          <button class="filter-btn" type="button" data-stash-filter="gear">Equipment</button>
+          <button class="filter-btn" type="button" data-stash-filter="material">Materials</button>
+          <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="stashTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="stashRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <span class="market-field" id="stashCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="stashCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <button class="stash-clear" id="stashClear" type="button">Clear</button>
+        </div>
+        <div id="levelFilter" hidden>
+          <span class="filter-label">Level</span>
+          <span id="levelLabel">0 - 100</span>
+          <div class="dual-range">
+            <div class="range-rail"></div><div class="range-fill" id="levelFill"></div>
+            <input id="levelMin" type="range" min="0" max="20" step="1" value="0" aria-label="Minimum level">
+            <input id="levelMax" type="range" min="0" max="20" step="1" value="20" aria-label="Maximum level">
+          </div>
+        </div>
+      </div>
+      <div class="stash-summary">
+        <div class="stash-summary-options">
+          <label class="market-check"><input id="showUnlisted" type="checkbox"> Show off-market items <span id="unlistedCount">0</span></label>
+          <label class="market-check"><input id="showEquipped" type="checkbox"> Show equipped items <span id="equippedCount">0</span></label>
+          <label class="market-check toggle-check" id="equippedOnlyControl" hidden><input id="equippedOnly" type="checkbox"><span class="toggle-track" aria-hidden="true"></span> Equipped only</label>
+          <label class="market-check" id="marketableOnlyControl" hidden><input id="marketableOnly" type="checkbox" checked> Marketable only</label>
+          <span class="inline-label">Price sort:</span><span class="compact-segment" aria-label="Inventory price sorting basis"><button class="active" type="button" data-stash-sort-mode="total">Total</button><button type="button" data-stash-sort-mode="unit">Unit</button></span><span class="estimate-tabs unit-sort-tabs" id="unitSortTabs" aria-label="Unit price sorting metric" hidden><button type="button" data-unit-sort="buy">Buy</button><button type="button" data-unit-sort="latest">Latest</button><button class="active" type="button" data-unit-sort="sell">Sell</button></span>
+        </div>
+      </div>
+      <div class="stash-price-head"><button class="item-head" type="button" data-stash-sort="item">Item</button><button class="qty-head" type="button" data-stash-sort="qty">Qty.</button><button class="buy-head" type="button" data-stash-sort="buy">Buy</button><button class="latest-head" type="button" data-stash-sort="latest">Latest</button><button class="sell-head" type="button" data-stash-sort="sell">Sell ▼</button></div>
+      <div id="stashBody"></div>
+    </div>
+  </section>
+
+  <section class="market-panel">
+    <div class="section-bar">Steam Market</div>
+    <div class="market-controls">
+      <div class="market-filter-row">
+        <span class="filter-label">Category</span>
+        <button class="filter-btn active" type="button" data-market-kind="all">All</button>
+        <button class="filter-btn" type="button" data-market-kind="gear">Equipment</button>
+        <button class="filter-btn" type="button" data-market-kind="material">Materials</button>
+        <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="marketTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+        <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="marketRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+        <span class="market-field" id="marketCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="marketCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+        <button id="marketClear" type="button">Clear</button>
+      </div>
+      <div id="marketLevelFilter" hidden>
+        <span class="filter-label">Level</span>
+        <span id="marketLevelLabel">0 - 100</span>
+        <div class="dual-range">
+          <div class="range-rail"></div><div class="range-fill" id="marketLevelFill"></div>
+          <input id="marketLevelMin" type="range" min="0" max="20" step="1" value="0" aria-label="Minimum market level">
+          <input id="marketLevelMax" type="range" min="0" max="20" step="1" value="20" aria-label="Maximum market level">
+        </div>
+      </div>
+      <div class="market-toolbar">
+        <span id="marketResultCount">0 results</span>
+        <label class="page-size">Items per page <select id="marketPageSize">
+          <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+        </select></label>
+      </div>
+    </div>
+    <div id="status"><span class="spin"></span>Loading Steam Market items...</div>
+    <div class="table-wrap">
+      <table id="tbl" hidden>
+        <thead><tr>
+          <th class="market-kind-cell" aria-label="Item category"></th><th></th><th data-sort="name">Item</th>
+          <th data-sort="listings">Qty.</th><th data-sort="buy">Buy</th><th data-sort="latest">Latest</th><th data-sort="price" id="priceHead">Sell ▼</th><th class="steam-cell" aria-label="Steam link"></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="market-pager" id="marketPager" hidden>
+      <button id="pageFirst" type="button" title="First page">«</button>
+      <button id="pagePrev" type="button">Previous</button>
+      <span id="pageInfo">1 / 1</span>
+      <button id="pageNext" type="button">Next</button>
+      <button id="pageLast" type="button" title="Last page">»</button>
+    </div>
+  </section>
+</main>
+<footer>Developed by Ge Alves - Follow on <a href="https://www.instagram.com/omwgeorge/" target="_blank" rel="noopener">Instagram</a></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const currencyFormats=new Map();
+const currencyNames=new Intl.DisplayNames(['en'],{type:'currency'});
+let all=[],stashData=null,stashMessage='Loading the TBH save...',stashRequestId=0;
+let sortKey='price',sortDir=-1,cooldown=0,brlRate=0,marketFollowupTimer=0;
+let exchangeRates={USD:1};
+let currency=readCurrencyPreference();
+let stashEstimate='sell';
+let stashSortKey='sell',stashSortDir=-1,stashSortMode='total';
+let stashFilter='all',stashTypes=new Set(),stashRarities=new Set(),stashCharacters=new Set(),levelMin=0,levelMax=100,showUnlisted=false,showEquipped=false,equippedOnly=false,marketableOnly=true;
+let marketKind='all',marketTypes=new Set(),marketRarities=new Set(),marketCharacters=new Set(),marketLevelMin=0,marketLevelMax=100;
+let marketPage=1,marketPageSize=10,marketPages=1;
+let marketSortPreparing=false;
+let searchWasEmpty=!$('search').value.length;
+let excludedStashItems=readExcludedStashItems();
+const marketDetails=new Map(),detailPending=new Set();
+const validLevels=[0,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,100];
+const gradeOrder=['COMMON','UNCOMMON','RARE','LEGENDARY','IMMORTAL','ARCANA','BEYOND','CELESTIAL','DIVINE','COSMIC'];
+const rarityColors={COMMON:'D7D7D7',UNCOMMON:'7CE937',RARE:'519FFF',LEGENDARY:'EBBB00',IMMORTAL:'E8695A',ARCANA:'FB86FF',BEYOND:'FF0080',CELESTIAL:'00F6FF',DIVINE:'F6E7A2',COSMIC:'FC00FF'};
+const rarityByColor=Object.fromEntries(Object.entries(rarityColors).map(([grade,color])=>[color,grade]));
+
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const escapeHtml=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const safeColor=s=>/^[0-9a-f]{6}$/i.test(s||'')?s:'';
+const itemRarityColor=item=>safeColor(item.color)||rarityColors[String(item.grade||marketItemGrade(item)).toUpperCase()]||'444b50';
+const stashItemKey=item=>item.marketListed===false?`unlisted:${item.itemKey}`:`market:${item.hash}`;
+const itemLevel=item=>Number(item.level??((item.type.match(/Lv\.?\s*(\d+)/i)||[])[1]||0));
+const marketItemKind=item=>itemLevel(item)>0?'gear':'material';
+const marketItemType=item=>marketItemKind(item)==='gear'?item.type.split('-')[0].trim():item.type.trim();
+const marketItemGrade=item=>(item.name.match(/\(([^)]+)\)/)||[])[1]||'';
+const itemGrade=item=>String(item.grade||marketItemGrade(item)||rarityByColor[String(item.color||'').toUpperCase()]||'').toUpperCase();
+const characterWeapons={Knight:['Sword','Shield'],Ranger:['Bow','Arrow'],Sorcerer:['Staff','Orb'],Priest:['Scepter','Tome'],Slayer:['Axe','Hatchet'],Hunter:['Crossbow','Bolt']};
+const characters=Object.keys(characterWeapons);
+const itemCharacter=item=>characters.find(character=>characterWeapons[character].includes(marketItemType(item)))||'';
+const matchesCharacter=(item,character)=>!character||(marketItemKind(item)==='gear'&&(!itemCharacter(item)||itemCharacter(item)===character));
+const matchesCharacters=(item,selected)=>selected.size===0||(marketItemKind(item)==='gear'&&selected.has(itemCharacter(item)));
+const otherCurrency=()=>currency==='USD'?'BRL':'USD';
+
+function readCurrencyPreference(){
+  try{
+    const saved=localStorage.getItem('tbh_currency_v2');
+    return /^[A-Z]{3}$/.test(saved||'')?saved:'USD';
+  }catch{return'USD'}
+}
+function saveCurrencyPreference(value){
+  try{localStorage.setItem('tbh_currency_v2',value)}catch{}
+}
+function readExcludedStashItems(){
+  try{return new Set(JSON.parse(localStorage.getItem('tbh_excluded_stash_v1')||'[]'))}catch{return new Set()}
+}
+function saveExcludedStashItems(){
+  try{localStorage.setItem('tbh_excluded_stash_v1',JSON.stringify([...excludedStashItems]))}catch{}
+}
+
+function currencyFormatter(code){
+  if(!currencyFormats.has(code))currencyFormats.set(code,new Intl.NumberFormat('en-US',{style:'currency',currency:code,maximumFractionDigits:2}));
+  return currencyFormats.get(code);
+}
+function currencyRate(code){
+  if(code==='BRL'&&!exchangeRates.BRL&&brlRate)return brlRate;
+  return exchangeRates[code]||0;
+}
+function formatMoney(usdCents,code){
+  const rate=currencyRate(code);
+  return rate?currencyFormatter(code).format(usdCents/100*rate):`${code} --`;
+}
+function formatBrlMoney(brlCents,code=currency){
+  if(brlCents==null||brlCents<0)return 'n/a';
+  const brlPerUsd=currencyRate('BRL'),targetPerUsd=currencyRate(code);
+  return brlPerUsd&&targetPerUsd?currencyFormatter(code).format(brlCents/100/brlPerUsd*targetPerUsd):`${code} --`;
+}
+function renderCurrencyMenu(){
+  const codes=Object.keys(exchangeRates).filter(code=>code!=='USD').sort((a,b)=>a.localeCompare(b));
+  $('currencyMenu').innerHTML=codes.map(code=>`<button type="button" class="currency-option${currency===code?' active':''}" data-menu-currency="${code}" role="option" aria-selected="${currency===code}"><b>${code}</b><span>${escapeHtml(currencyNames.of(code)||code)}</span></button>`).join('');
+}
+
+async function loadExchangeRates(){
+  try{
+    const response=await fetch('/api/exchange-rates');
+    if(!response.ok)throw new Error(response.status);
+    const data=await response.json();exchangeRates={USD:1,...data.rates};brlRate=exchangeRates.BRL||0;
+    if(!exchangeRates[currency])currency='USD';
+  }catch{currency='USD'}
+  renderCurrencyMenu();updateCurrency();
+}
+function priceColumn(item,metric,qty=1,tag='div',showUnit=false){
+  const detail=marketDetails.get(item.hash);
+  const marketTable=tag==='td';
+  let primary='...',secondary='',date='';
+  if(metric==='sell'){
+    primary=formatMoney(item.priceCents*qty,currency);
+    secondary=marketTable?'':showUnit?`${formatMoney(item.priceCents,currency)} each`:formatMoney(item.priceCents*qty,otherCurrency());
+  }else if(detail){
+    const unitCents=metric==='buy'?detail.buyBrlCents:detail.latestBrlCents;
+    const cents=unitCents*qty;
+    primary=cents?formatBrlMoney(cents,currency):'n/a';
+    secondary=cents&&!marketTable?(showUnit?`${formatBrlMoney(unitCents,currency)} each`:formatBrlMoney(cents,otherCurrency())):'';
+    if(metric==='latest'&&detail.latestAt)date=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'}).format(detail.latestAt);
+    if(metric==='latest'&&item.marketListed===false&&detail.latestBrlCents>0)date=`${date}${date?' · ':''}Historical`;
+  }
+  return `<${tag} class="price-cell${tag==='td'?' market-price':''} ${metric}"><span class="price-value">${primary}</span>${secondary||date?`<span class="price-sub">${secondary}${secondary&&date?' · ':''}${date}</span>`:''}</${tag}>`;
+}
+function unavailablePriceColumns(tag='div'){
+  return ['buy','latest','sell'].map(metric=>unavailablePriceColumn(metric,tag)).join('');
+}
+function unavailablePriceColumn(metric,tag='div'){
+  return `<${tag} class="price-cell${tag==='td'?' market-price':''} ${metric}"><span class="price-value">n/a</span></${tag}>`;
+}
+async function loadMarketDetails(items){
+  const names=[...new Set(items.filter(item=>item?.hash&&!item.hash.startsWith('unlisted-')&&(item.priceCents>0||item.catalogKnown)&&!marketDetails.has(item.hash)&&!detailPending.has(item.hash)).map(item=>item.hash))].slice(0,30);
+  if(!names.length)return;
+  names.forEach(name=>detailPending.add(name));
+  try{
+    const query=new URLSearchParams();names.forEach(name=>query.append('name',name));
+    const data=await(await fetch(`/api/market-details?${query}`)).json();
+    for(const detail of data.details||[])if(!detail.error)marketDetails.set(detail.name,detail);
+  }catch{}finally{
+    names.forEach(name=>detailPending.delete(name));renderStash();renderMarket();
+  }
+}
+
+async function ensureMarketDetails(items,onProgress=()=>{}){
+  const pending=[...new Map(items.filter(item=>item?.hash&&item.priceCents>0&&!marketDetails.has(item.hash)).map(item=>[item.hash,item])).values()];
+  const total=pending.length;
+  for(let index=0;index<total;index+=30){
+    onProgress(Math.min(index,total),total);
+    await loadMarketDetails(pending.slice(index,index+30));
+  }
+  onProgress(total,total);
+}
+function steamIcon(){
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-9.8 8.02l5.34 2.2a2.83 2.83 0 0 1 1.48-.42l2.38-3.45A3.78 3.78 0 1 1 15 13.32l-3.38 2.42a2.85 2.85 0 0 1-5.55.6l-3.17-1.31A10 10 0 1 0 12 2Zm2.22 5.15a2.18 2.18 0 1 0 2.18 2.18 2.18 2.18 0 0 0-2.18-2.18ZM8.78 13.2a1.43 1.43 0 0 0-.54.1l1.47.61a1.16 1.16 0 1 1-.89 2.14l-1.42-.59a1.42 1.42 0 1 0 1.38-2.26Z"/></svg>`;
+}
+function visibilityIcon(excluded){
+  return excluded
+    ? `<svg class="visibility-off-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2 2 0 0 0 2.7 2.7M9.9 4.2A10.5 10.5 0 0 1 12 4c5.5 0 9 5 9 5a15.7 15.7 0 0 1-2.1 2.6M6.6 6.7C4.3 8.1 3 10 3 10s3.5 5 9 5c1 0 1.9-.2 2.7-.5"/></svg>`
+    : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.5-5 9-5 9 5 9 5-3.5 5-9 5-9-5-9-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>`;
+}
+function parseBrl(text){
+  const raw=String(text||'').replace(/[^\d,.-]/g,'');
+  return Number(raw.replace(/\./g,'').replace(',','.'))||0;
+}
+
+async function loadAutoStash(preserve=false){
+  const requestId=++stashRequestId;
+  if(!preserve)stashData=null;
+  try{
+    const response=await fetch(`/api/stash?_=${Date.now()}`,{cache:'no-store'});
+    if(!response.ok)throw new Error(response.status);
+    const j=await response.json();
+    if(requestId!==stashRequestId)return false;
+    if(j.supported&&j.found&&j.items){stashData=j;populateStashOptions();return true}
+    else if(j.found===false) stashMessage='TBH save not found. Open the game at least once.';
+    else if(j.needItems) stashMessage='The market list is still being prepared.';
+    else stashMessage='Could not load the TBH stash.';
+  }catch{if(requestId===stashRequestId)stashMessage='Could not load the TBH stash.'}
+  return false;
+}
+
+async function refreshStashSilently(){
+  if(await loadAutoStash(true))renderStash();
+}
+
+async function refreshBrlRate(){
+  if(exchangeRates.BRL){brlRate=exchangeRates.BRL;return}
+  const pool=stashData?.items?.length?stashData.items:all;
+  const item=pool.slice().sort((a,b)=>b.priceCents-a.priceCents)[0];
+  if(!item)return;
+  try{
+    const response=await fetch(`/api/price?name=${encodeURIComponent(item.hash)}`,{signal:AbortSignal.timeout(8000)});
+    if(!response.ok)return;
+    const j=await response.json();
+    const brl=parseBrl(j.brl);
+    if(brl>0&&item.priceCents>0)brlRate=brl/(item.priceCents/100);
+  }catch{}
+}
+
+function filteredStash(){
+  if(!stashData)return[];
+  const source=stashSource();
+  return source.filter(item=>{
+    if(stashFilter==='material'&&item.kind!=='material')return false;
+    if(stashFilter==='gear'){
+      const level=itemLevel(item);
+      if(item.kind!=='gear'||level<levelMin||level>levelMax)return false;
+    }
+    if(stashTypes.size&&!stashTypes.has(marketItemType(item)))return false;
+    if(stashRarities.size&&!stashRarities.has(itemGrade(item)))return false;
+    if(!matchesCharacters(item,stashCharacters))return false;
+    return true;
+  });
+}
+
+function stashSource(){
+  if(!stashData)return[];
+  const equipped=(stashData.equippedItems||[]).filter(item=>{
+    if(marketableOnly&&!item.marketable)return false;
+    return true;
+  });
+  const source=equippedOnly?[...equipped]:[...stashData.items];
+  if(!equippedOnly&&showUnlisted)source.push(...(stashData.unlistedItems||[]));
+  if(!equippedOnly&&showEquipped)source.push(...equipped);
+  const merged=new Map();
+  for(const item of source){
+    const key=item.marketListed===false?`unlisted:${item.itemKey}`:`market:${item.hash}`;
+    const current=merged.get(key);
+    if(!current){merged.set(key,{...item,heroes:[...(item.heroes||[])]});continue}
+    current.qty+=item.qty;
+    if(item.equipped){
+      current.equipped=true;
+      current.equippedQty=(current.equippedQty||0)+(item.equippedQty||item.qty);
+      current.heroes=[...new Set([...(current.heroes||[]),...(item.heroes||[])])];
+    }
+  }
+  return [...merged.values()];
+}
+
+function stashSortValue(item,key){
+  if(key==='qty')return item.qty;
+  const multiplier=stashSortMode==='total'?item.qty:1;
+  if(key==='sell')return item.priceCents>0?item.priceCents*multiplier:null;
+  const detail=marketDetails.get(item.hash),value=key==='buy'?detail?.buyBrlCents:detail?.latestBrlCents;
+  return value>0?value*multiplier:null;
+}
+function sortStashItems(items){
+  return items.slice().sort((a,b)=>{
+    if(stashSortKey==='item')return stashSortDir*a.name.localeCompare(b.name);
+    const av=stashSortValue(a,stashSortKey),bv=stashSortValue(b,stashSortKey);
+    if(av===null&&bv===null)return a.name.localeCompare(b.name);
+    if(av===null)return 1;if(bv===null)return-1;
+    return stashSortDir*(av-bv)||a.name.localeCompare(b.name);
+  });
+}
+function updateStashSortHead(){
+  document.querySelectorAll('[data-stash-sort]').forEach(button=>{
+    const label={item:'Item',qty:'Qty.',sell:'Sell',buy:'Buy',latest:'Latest'}[button.dataset.stashSort];
+    button.textContent=label+(button.dataset.stashSort===stashSortKey?(stashSortDir<0?' ▼':' ▲'):'');
+  });
+  document.querySelectorAll('[data-unit-sort]').forEach(button=>button.classList.toggle('active',button.dataset.unitSort===stashSortKey));
+}
+
+function renderStash(){
+  $('stash').hidden=false;
+  if(!stashData){
+    $('stashBody').innerHTML=`<div class="empty">${escapeHtml(stashMessage)}</div>`;
+    $('stashTotal').innerHTML=`<span class="money-main">${formatMoney(0,currency)}</span>`;
+    $('stashCount').textContent='automatic save reading';return;
+  }
+  const items=sortStashItems(filteredStash());
+  const countedItems=items.filter(item=>!excludedStashItems.has(stashItemKey(item)));
+  const visibleCents=countedItems.reduce((sum,item)=>sum+item.priceCents*item.qty,0);
+  const visibleQty=items.reduce((sum,item)=>sum+item.qty,0);
+  const detailItems=items.filter(item=>item.hash&&!item.hash.startsWith('unlisted-')&&(item.priceCents>0||item.catalogKnown));
+  const countedDetailItems=countedItems.filter(item=>item.hash&&!item.hash.startsWith('unlisted-')&&(item.priceCents>0||item.catalogKnown));
+  const buyBrlCents=countedDetailItems.reduce((sum,item)=>sum+(marketDetails.get(item.hash)?.buyBrlCents||0)*item.qty,0);
+  const latestBrlCents=countedDetailItems.reduce((sum,item)=>sum+(marketDetails.get(item.hash)?.latestBrlCents||0)*item.qty,0);
+  const detailsComplete=countedDetailItems.every(item=>marketDetails.has(item.hash));
+  $('unlistedCount').textContent=`(${stashData.unpricedItems})`;
+  $('equippedCount').textContent=`(${stashData.equippedCount||0})`;
+  const totals={
+    buy:{label:'Buy estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(buyBrlCents)}</span>`:'<span class="money-main">Loading...</span>',short:detailsComplete?formatBrlMoney(buyBrlCents):'loading...'},
+    latest:{label:'Latest estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(latestBrlCents)}</span>`:'<span class="money-main">Loading...</span>',short:detailsComplete?formatBrlMoney(latestBrlCents):'loading...'},
+    sell:{label:'Sell estimate',markup:`<span class="money-main">${formatMoney(visibleCents,currency)}</span>`,short:formatMoney(visibleCents,currency)},
+  };
+  $('totalLabel').textContent=totals[stashEstimate].label;
+  $('stashTotal').innerHTML=`${totals[stashEstimate].markup}<div class="estimate-secondary">${Object.entries(totals).filter(([key])=>key!==stashEstimate).map(([key,value])=>`<span>${key}<b>${value.short}</b></span>`).join('')}</div>`;
+  $('stashCount').textContent=`${visibleQty} visible items`;
+  updateStashSortHead();
+
+  $('stashBody').innerHTML=items.length?items.map(item=>{
+    const unlisted=item.marketListed===false;
+    const color=safeColor(item.color);
+    const rarityColor=itemRarityColor(item);
+    const visibilityKey=stashItemKey(item);
+    const excluded=excludedStashItems.has(visibilityKey);
+    const level=item.kind==='gear'&&!/Lv\.?\s*\d+/i.test(item.type)?` · Lv. ${itemLevel(item)}`:'';
+    const marketNote=item.marketable?'no active Steam Market listing':'not marketable on the Steam Market';
+    const prices=unlisted
+      ? (item.catalogKnown?`${priceColumn(item,'buy',item.qty,'div',true)}${priceColumn(item,'latest',item.qty,'div',true)}${unavailablePriceColumn('sell')}`:unavailablePriceColumns())
+      : ['buy','latest','sell'].map(metric=>priceColumn(item,metric,item.qty,'div',true)).join('');
+    const equippedTag=item.equipped?`<span class="equipped-tag" title="Equipped by ${escapeHtml((item.heroes||[]).join(', '))}">Equipped</span>`:'';
+    const link=item.url?`<a class="steam-link" href="${item.url}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a>`:'<span class="steam-link-space" aria-hidden="true"></span>';
+    return `<div class="srow${excluded?' excluded':''}"><span class="kind" title="${item.kind==='material'?'Material':'Equipment'}">${item.kind==='material'?'◆':'⚔'}</span><span class="stash-icon" style="--rarity-color:#${rarityColor}">${item.icon?`<img loading="lazy" src="${item.icon}" alt="">`:'<span class="unlisted-icon">?</span>'}<button class="stash-visibility" type="button" data-stash-visibility="${encodeURIComponent(visibilityKey)}" title="${excluded?'Include item in inventory estimates':'Exclude item from inventory estimates'}" aria-label="${excluded?'Include':'Exclude'} ${escapeHtml(item.name)} ${excluded?'in':'from'} inventory estimates">${visibilityIcon(excluded)}</button></span><div class="sn"><div class="sn-title"><b${color?` style="color:#${color}"`:''}>${escapeHtml(item.name)}</b>${equippedTag}</div><small>${escapeHtml(item.type)}${level}${unlisted?` · ${marketNote}`:''}</small></div><div class="qty">x${item.qty}</div>${prices}${link}</div>`;
+  }).join(''):'<div class="empty">No items match the selected filters.</div>';
+  queueMicrotask(()=>loadMarketDetails(detailItems));
+}
+
+function fillSelect(select,values,emptyLabel,current){
+  select.innerHTML=`<option value="">${emptyLabel}</option>`+values.map(value=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('');
+  select.value=values.includes(current)?current:'';
+  return select.value;
+}
+
+const multiSelectControls=['stashType','stashRarity','stashCharacter','marketType','marketRarity','marketCharacter'];
+
+function renderMultiSelect(control,values,selected){
+  for(const value of [...selected])if(!values.includes(value))selected.delete(value);
+  const label=$(control+'Label'),menu=$(control+'Menu');
+  label.textContent=selected.size===0?'All':selected.size===1?[...selected][0]:`${selected.size} selected`;
+  menu.innerHTML=values.map(value=>{
+    const text=control.endsWith('Rarity')?`<span class="rarity-option-text" style="color:#${rarityColors[value]||'aeb4b8'}">${escapeHtml(value)}</span>`:escapeHtml(value);
+    return `<label class="multi-option" role="option" aria-selected="${selected.has(value)}"><input type="checkbox" value="${escapeHtml(value)}"${selected.has(value)?' checked':''}> ${text}</label>`;
+  }).join('');
+}
+
+function closeMultiSelect(control){
+  $(control+'Menu').hidden=true;$(control+'Button').setAttribute('aria-expanded','false');
+}
+
+function closeMultiSelects(except=''){
+  for(const control of multiSelectControls)if(control!==except)closeMultiSelect(control);
+}
+
+function setupMultiSelect(control,selected,onChange){
+  const button=$(control+'Button'),menu=$(control+'Menu');
+  button.addEventListener('click',()=>{
+    const open=menu.hidden;
+    closeMultiSelects(control);
+    menu.hidden=!open;button.setAttribute('aria-expanded',String(open));
+  });
+  menu.addEventListener('change',event=>{
+    const input=event.target.closest('input[type="checkbox"]');if(!input)return;
+    if(input.checked)selected.add(input.value);else selected.delete(input.value);
+    onChange();
+  });
+}
+
+function populateStashOptions(){
+  if(!stashData)return;
+  const source=stashSource();
+  const kindPool=stashFilter==='all'?source:source.filter(item=>item.kind===stashFilter);
+  renderMultiSelect('stashType',[...new Set(kindPool.map(marketItemType).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),stashTypes);
+  renderMultiSelect('stashRarity',gradeOrder,stashRarities);
+  const materialActive=stashFilter==='material';
+  if(materialActive)stashCharacters.clear();
+  renderMultiSelect('stashCharacter',characters,stashCharacters);
+  $('stashCharacterField').hidden=materialActive;
+}
+
+function populateMarketOptions(){
+  const kindPool=marketKind==='all'?all:all.filter(item=>marketItemKind(item)===marketKind);
+  const types=[...new Set(kindPool.map(marketItemType).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  renderMultiSelect('marketType',types,marketTypes);
+  renderMultiSelect('marketRarity',gradeOrder,marketRarities);
+  const materialActive=marketKind==='material',gearActive=marketKind==='gear';
+  if(materialActive)marketCharacters.clear();
+  renderMultiSelect('marketCharacter',characters,marketCharacters);
+  $('marketCharacterField').hidden=materialActive;
+  $('marketLevelFilter').hidden=!gearActive;
+  if(!gearActive)resetMarketLevelRange(false);
+}
+
+function filteredMarket(){
+  const query=norm($('search').value.trim());
+  return all.filter(item=>{
+    const kind=marketItemKind(item);
+    if(query&&!norm(item.name).includes(query)&&!norm(item.type).includes(query))return false;
+    if(marketKind!=='all'&&kind!==marketKind)return false;
+    if(marketTypes.size&&!marketTypes.has(marketItemType(item)))return false;
+    if(marketRarities.size&&!marketRarities.has(itemGrade(item)))return false;
+    if(!matchesCharacters(item,marketCharacters))return false;
+    if(marketKind==='gear'){
+      const level=itemLevel(item);
+      if(level<marketLevelMin||level>marketLevelMax)return false;
+    }
+    return true;
+  });
+}
+
+function marketSortValue(item,key){
+  if(key==='listings')return item.listings;
+  if(key==='price')return item.priceCents;
+  const detail=marketDetails.get(item.hash);
+  return key==='buy'?detail?.buyBrlCents:detail?.latestBrlCents;
+}
+
+function updateMarketSortHead(){
+  const labels={name:'Item',listings:'Qty.',buy:'Buy',latest:'Latest',price:'Sell'};
+  document.querySelectorAll('th[data-sort]').forEach(th=>{
+    const key=th.dataset.sort;
+    th.textContent=labels[key]+(key===sortKey?(sortDir<0?' ▼':' ▲'):'');
+  });
+}
+
+function renderMarket(){
+  const list=filteredMarket().sort((a,b)=>{
+    if(sortKey==='name')return sortDir*a.name.localeCompare(b.name);
+    const av=marketSortValue(a,sortKey),bv=marketSortValue(b,sortKey);
+    if(!(av>0)&&!(bv>0))return a.name.localeCompare(b.name);
+    if(!(av>0))return 1;if(!(bv>0))return-1;
+    return sortDir*(av-bv)||a.name.localeCompare(b.name);
+  });
+  marketPages=Math.max(1,Math.ceil(list.length/marketPageSize));
+  marketPage=Math.min(Math.max(1,marketPage),marketPages);
+  const start=(marketPage-1)*marketPageSize,end=Math.min(start+marketPageSize,list.length);
+  const pageItems=list.slice(start,end);
+  $('rows').innerHTML=pageItems.map((item,index)=>{
+    const color=safeColor(item.color);
+    const rarityColor=itemRarityColor(item);
+    const prices=['buy','latest','sell'].map(metric=>priceColumn(item,metric,1,'td')).join('');
+    const kind=marketItemKind(item);
+    return `<tr class="item"><td class="market-kind-cell"><span class="kind" title="${kind==='material'?'Material':'Equipment'}">${kind==='material'?'◆':'⚔'}</span></td><td>${item.icon?`<img class="ic" loading="lazy" src="${item.icon}" alt="" style="border-color:#${rarityColor}">`:''}</td><td><div class="nm"${color?` style="color:#${color}"`:''}><a href="${item.url}" target="_blank" rel="noopener" title="Open on Steam">${escapeHtml(item.name)}</a></div><div class="tp"><span class="market-rank">#${start+index+1}</span> · ${escapeHtml(item.type)}</div></td><td class="ls">${item.listings}</td>${prices}<td class="steam-cell"><a class="steam-link" href="${item.url}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a></td></tr>`;
+  }).join('');
+  $('status').hidden=list.length>0;$('tbl').hidden=list.length===0;
+  if(!list.length)$('status').textContent=`No items found for "${$('search').value}"`;
+  if(!marketSortPreparing)$('marketResultCount').textContent=`${list.length} results`;
+  $('marketPager').hidden=list.length===0;$('pageInfo').textContent=`${marketPage} / ${marketPages}`;
+  $('pageFirst').disabled=$('pagePrev').disabled=marketPage<=1;
+  $('pageNext').disabled=$('pageLast').disabled=marketPage>=marketPages;
+  updateMarketSortHead();
+  queueMicrotask(()=>loadMarketDetails(pageItems));
+}
+
+function updateCurrency(){
+  document.querySelectorAll('[data-currency]').forEach(button=>{
+    const active=button.dataset.currency===currency;
+    button.classList.toggle('active',active);button.setAttribute('aria-pressed',active);
+  });
+  $('currencyMenuButton').classList.toggle('active',currency!=='USD');
+  $('currencyMenuButton').setAttribute('aria-pressed',currency!=='USD');
+  $('currencyMenuLabel').textContent=currency==='USD'?'Other':currency;
+  renderCurrencyMenu();
+  renderStash();renderMarket();
+}
+
+function updateLevelRange(changed){
+  let minIndex=Number($('levelMin').value),maxIndex=Number($('levelMax').value);
+  if(changed==='min')minIndex=Math.min(minIndex,maxIndex);else maxIndex=Math.max(maxIndex,minIndex);
+  levelMin=validLevels[minIndex];levelMax=validLevels[maxIndex];$('levelMin').value=minIndex;$('levelMax').value=maxIndex;
+  $('levelLabel').textContent=`${levelMin} - ${levelMax}`;$('levelFill').style.left=`${minIndex/(validLevels.length-1)*100}%`;$('levelFill').style.right=`${100-maxIndex/(validLevels.length-1)*100}%`;
+  renderStash();
+}
+
+function updateMarketLevelRange(changed){
+  let minIndex=Number($('marketLevelMin').value),maxIndex=Number($('marketLevelMax').value);
+  if(changed==='min')minIndex=Math.min(minIndex,maxIndex);else maxIndex=Math.max(maxIndex,minIndex);
+  marketLevelMin=validLevels[minIndex];marketLevelMax=validLevels[maxIndex];
+  $('marketLevelMin').value=minIndex;$('marketLevelMax').value=maxIndex;
+  $('marketLevelLabel').textContent=`${marketLevelMin} - ${marketLevelMax}`;
+  $('marketLevelFill').style.left=`${minIndex/(validLevels.length-1)*100}%`;$('marketLevelFill').style.right=`${100-maxIndex/(validLevels.length-1)*100}%`;
+  marketPage=1;renderMarket();
+}
+function resetMarketLevelRange(render=true){
+  marketLevelMin=0;marketLevelMax=100;
+  $('marketLevelMin').value=0;$('marketLevelMax').value=validLevels.length-1;
+  $('marketLevelLabel').textContent='0 - 100';
+  $('marketLevelFill').style.left='0%';$('marketLevelFill').style.right='0%';
+  if(render){marketPage=1;renderMarket()}
+}
+
+function setupDualRange(minId,maxId,onUpdate){
+  const minInput=$(minId),maxInput=$(maxId),track=minInput.closest('.dual-range');
+  let active=null;
+  const pointerValue=clientX=>{
+    const rect=track.getBoundingClientRect();
+    const ratio=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width));
+    const floor=Number(minInput.getAttribute('min')||0),ceil=Number(maxInput.getAttribute('max')||100);
+    const step=Number(minInput.step||1);
+    return Math.round((floor+ratio*(ceil-floor))/step)*step;
+  };
+  const move=clientX=>{
+    if(!active)return;
+    const raw=pointerValue(clientX),min=Number(minInput.value),max=Number(maxInput.value);
+    active.value=active===minInput?Math.min(raw,max):Math.max(raw,min);
+    onUpdate(active===minInput?'min':'max');
+  };
+  track.addEventListener('pointerdown',event=>{
+    if(event.button!==undefined&&event.button!==0)return;
+    const raw=pointerValue(event.clientX),min=Number(minInput.value),max=Number(maxInput.value);
+    active=Math.abs(raw-min)<=Math.abs(raw-max)?minInput:maxInput;
+    if(min===max)active=raw<=min?minInput:maxInput;
+    minInput.style.zIndex=active===minInput?'3':'2';maxInput.style.zIndex=active===maxInput?'3':'2';
+    track.setPointerCapture(event.pointerId);event.preventDefault();move(event.clientX);
+  });
+  track.addEventListener('pointermove',event=>{if(active&&track.hasPointerCapture(event.pointerId))move(event.clientX)});
+  const stop=event=>{if(track.hasPointerCapture(event.pointerId))track.releasePointerCapture(event.pointerId);active=null};
+  track.addEventListener('pointerup',stop);track.addEventListener('pointercancel',stop);
+}
+
+async function load(force=false,silent=false){
+  if(!silent){
+    $('status').hidden=false;$('tbl').hidden=true;
+    $('status').innerHTML=`<span class="spin"></span>Loading Steam Market items...${force?' refreshing in the background':''}`;
+  }
+  try{
+    const [response]=await Promise.all([
+      fetch(`/api/items${force?'?refresh=1':''}`),
+      loadAutoStash(true),
+    ]);
+    if(!response.ok)throw new Error((await response.json()).error||response.status);
+    if(force){marketDetails.clear();detailPending.clear()}
+    const data=await response.json();all=(data.items||[]).filter(item=>item.priceCents>0);
+    populateMarketOptions();updateCurrency();
+    refreshBrlRate().then(updateCurrency);
+    if(data.refreshing){
+      clearTimeout(marketFollowupTimer);
+      marketFollowupTimer=setTimeout(()=>load(false,true),45000);
+    }
+  }catch(error){if(!silent)$('status').textContent=`Error: ${error.message}. Try refreshing again in a minute.`}
+}
+
+document.querySelectorAll('[data-currency]').forEach(button=>button.addEventListener('click',()=>{
+  currency=button.dataset.currency;saveCurrencyPreference(currency);updateCurrency();
+}));
+$('currencyMenuButton').addEventListener('click',()=>{
+  const open=$('currencyMenu').hidden;
+  $('currencyMenu').hidden=!open;$('currencyMenuButton').setAttribute('aria-expanded',open);
+});
+$('currencyMenu').addEventListener('click',event=>{
+  const button=event.target.closest('[data-menu-currency]');if(!button)return;
+  currency=button.dataset.menuCurrency;saveCurrencyPreference(currency);updateCurrency();
+  $('currencyMenu').hidden=true;$('currencyMenuButton').setAttribute('aria-expanded','false');
+});
+document.addEventListener('click',event=>{
+  if(!event.target.closest('.currency-menu-wrap')){$('currencyMenu').hidden=true;$('currencyMenuButton').setAttribute('aria-expanded','false')}
+  for(const control of multiSelectControls)if(!event.target.closest(`#${control}Button`)&&!event.target.closest(`#${control}Menu`))closeMultiSelect(control);
+});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){$('currencyMenu').hidden=true;$('currencyMenuButton').setAttribute('aria-expanded','false');closeMultiSelects()}
+});
+document.querySelectorAll('[data-stash-filter]').forEach(button=>button.addEventListener('click',()=>{
+  stashFilter=button.dataset.stashFilter;stashTypes.clear();
+  document.querySelectorAll('[data-stash-filter]').forEach(item=>item.classList.toggle('active',item===button));
+  $('levelFilter').hidden=stashFilter!=='gear';populateStashOptions();renderStash();
+}));
+document.querySelectorAll('[data-estimate]').forEach(button=>button.addEventListener('click',()=>{
+  stashEstimate=button.dataset.estimate;
+  document.querySelectorAll('[data-estimate]').forEach(item=>item.classList.toggle('active',item===button));
+  renderStash();
+}));
+document.querySelectorAll('[data-stash-sort]').forEach(button=>button.addEventListener('click',()=>{
+  const next=button.dataset.stashSort;
+  stashSortDir=next===stashSortKey?-stashSortDir:(next==='item'?1:-1);
+  stashSortKey=next;renderStash();
+}));
+document.querySelectorAll('[data-stash-sort-mode]').forEach(button=>button.addEventListener('click',()=>{
+  stashSortMode=button.dataset.stashSortMode;
+  if(stashSortMode==='unit'){stashSortKey='sell';stashSortDir=-1}
+  $('unitSortTabs').hidden=stashSortMode!=='unit';
+  document.querySelectorAll('[data-stash-sort-mode]').forEach(item=>item.classList.toggle('active',item===button));
+  renderStash();
+}));
+document.querySelectorAll('[data-unit-sort]').forEach(button=>button.addEventListener('click',()=>{
+  stashSortKey=button.dataset.unitSort;stashSortDir=-1;renderStash();
+}));
+$('levelMin').addEventListener('input',()=>updateLevelRange('min'));
+$('levelMax').addEventListener('input',()=>updateLevelRange('max'));
+$('showUnlisted').addEventListener('change',event=>{showUnlisted=event.target.checked;populateStashOptions();renderStash()});
+$('stashBody').addEventListener('click',event=>{
+  const button=event.target.closest('[data-stash-visibility]');if(!button)return;
+  const encodedKey=button.dataset.stashVisibility,key=decodeURIComponent(encodedKey);
+  if(excludedStashItems.has(key))excludedStashItems.delete(key);else excludedStashItems.add(key);
+  saveExcludedStashItems();renderStash();
+  const replacement=[...document.querySelectorAll('[data-stash-visibility]')].find(item=>item.dataset.stashVisibility===encodedKey);
+  if(replacement){
+    replacement.classList.add('visibility-refresh');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>replacement.classList.remove('visibility-refresh')));
+  }
+});
+$('showEquipped').addEventListener('change',event=>{
+  showEquipped=event.target.checked;$('equippedOnlyControl').hidden=!showEquipped;
+  $('marketableOnlyControl').hidden=!showEquipped;
+  if(showEquipped){marketableOnly=true;$('marketableOnly').checked=true}
+  else{equippedOnly=false;$('equippedOnly').checked=false}
+  populateStashOptions();renderStash();
+});
+$('equippedOnly').addEventListener('change',event=>{equippedOnly=event.target.checked;populateStashOptions();renderStash()});
+$('marketableOnly').addEventListener('change',event=>{
+  marketableOnly=event.target.checked;populateStashOptions();renderStash();
+});
+$('stashClear').addEventListener('click',()=>{
+  stashFilter='all';stashTypes.clear();stashRarities.clear();stashCharacters.clear();levelMin=0;levelMax=100;showUnlisted=false;showEquipped=false;equippedOnly=false;marketableOnly=true;stashSortMode='total';stashSortKey='sell';stashSortDir=-1;
+  document.querySelectorAll('[data-stash-filter]').forEach(button=>button.classList.toggle('active',button.dataset.stashFilter==='all'));
+  document.querySelectorAll('[data-stash-sort-mode]').forEach(button=>button.classList.toggle('active',button.dataset.stashSortMode==='total'));
+  $('unitSortTabs').hidden=true;
+  $('showUnlisted').checked=false;$('showEquipped').checked=false;$('equippedOnly').checked=false;$('marketableOnly').checked=true;$('equippedOnlyControl').hidden=true;$('marketableOnlyControl').hidden=true;$('levelFilter').hidden=true;closeMultiSelects();
+  $('levelMin').value=0;$('levelMax').value=validLevels.length-1;$('levelLabel').textContent='0 - 100';$('levelFill').style.left='0%';$('levelFill').style.right='0%';
+  populateStashOptions();renderStash();
+});
+function setStashOpen(open){
+  $('stashContent').style.display=open?'':'none';$('stashToggle').classList.toggle('open',open);$('stash').classList.toggle('open',open);
+  $('stashHead').setAttribute('aria-expanded',open);
+}
+function toggleStash(){setStashOpen($('stashContent').style.display==='none')}
+$('stashBar').addEventListener('click',event=>{if(!event.target.closest('button,a'))toggleStash()});
+$('stashHead').addEventListener('click',event=>{if(!event.target.closest('button,a'))toggleStash()});
+$('stashHead').addEventListener('keydown',event=>{
+  if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleStash()}
+});
+function handleSearchInput(){
+  const empty=!$('search').value.length;
+  if(searchWasEmpty&&!empty)setStashOpen(false);
+  searchWasEmpty=empty;marketPage=1;renderMarket();
+}
+$('search').addEventListener('input',handleSearchInput);
+$('search').addEventListener('search',handleSearchInput);
+document.querySelectorAll('[data-market-kind]').forEach(button=>button.addEventListener('click',()=>{
+  marketKind=button.dataset.marketKind;marketTypes.clear();marketPage=1;
+  document.querySelectorAll('[data-market-kind]').forEach(item=>item.classList.toggle('active',item===button));
+  populateMarketOptions();renderMarket();
+}));
+$('marketLevelMin').addEventListener('input',()=>updateMarketLevelRange('min'));
+$('marketLevelMax').addEventListener('input',()=>updateMarketLevelRange('max'));
+$('marketPageSize').addEventListener('change',event=>{marketPageSize=Number(event.target.value);marketPage=1;renderMarket()});
+$('marketClear').addEventListener('click',()=>{
+  marketKind='all';marketTypes.clear();marketRarities.clear();marketCharacters.clear();marketPage=1;
+  document.querySelectorAll('[data-market-kind]').forEach(button=>button.classList.toggle('active',button.dataset.marketKind==='all'));
+  resetMarketLevelRange(false);populateMarketOptions();renderMarket();
+});
+$('pageFirst').addEventListener('click',()=>{marketPage=1;renderMarket()});
+$('pagePrev').addEventListener('click',()=>{marketPage--;renderMarket()});
+$('pageNext').addEventListener('click',()=>{marketPage++;renderMarket()});
+$('pageLast').addEventListener('click',()=>{marketPage=marketPages;renderMarket()});
+document.querySelectorAll('th[data-sort]').forEach(th=>th.addEventListener('click',async()=>{
+  if(marketSortPreparing)return;
+  const next=th.dataset.sort;sortDir=next===sortKey?-sortDir:(next==='name'?1:-1);sortKey=next;marketPage=1;
+  renderMarket();
+  if(next==='buy'||next==='latest'){
+    marketSortPreparing=true;
+    const candidates=filteredMarket();
+    await ensureMarketDetails(candidates,(done,total)=>{$('marketResultCount').textContent=total?`Preparing ${next} sorting · ${done}/${total}`:`${candidates.length} results`});
+    marketSortPreparing=false;renderMarket();
+  }
+}));
+$('refresh').addEventListener('click',()=>{
+  if(cooldown)return;load(true,false);cooldown=10;const button=$('refresh');button.disabled=true;
+  const timer=setInterval(()=>{cooldown--;button.textContent=cooldown?`Refresh ${cooldown}s`:'Refresh';button.disabled=cooldown>0;if(!cooldown)clearInterval(timer)},1000);
+});
+
+function updateHomeButton(){ $('homeButton').disabled=window.scrollY<=0 }
+$('homeButton').addEventListener('click',()=>{if(window.scrollY>0)window.scrollTo({top:0,behavior:'smooth'})});
+window.addEventListener('scroll',updateHomeButton,{passive:true});
+updateHomeButton();
+
+setupDualRange('levelMin','levelMax',updateLevelRange);
+setupDualRange('marketLevelMin','marketLevelMax',updateMarketLevelRange);
+setupMultiSelect('stashType',stashTypes,()=>{populateStashOptions();renderStash()});
+setupMultiSelect('stashRarity',stashRarities,()=>{populateStashOptions();renderStash()});
+setupMultiSelect('stashCharacter',stashCharacters,()=>{populateStashOptions();renderStash()});
+setupMultiSelect('marketType',marketTypes,()=>{marketPage=1;populateMarketOptions();renderMarket()});
+setupMultiSelect('marketRarity',marketRarities,()=>{marketPage=1;populateMarketOptions();renderMarket()});
+setupMultiSelect('marketCharacter',marketCharacters,()=>{marketPage=1;populateMarketOptions();renderMarket()});
+
+setInterval(refreshStashSilently,30000);
+setInterval(()=>load(true,true),5*60*1000);
+
+updateLevelRange();loadExchangeRates().finally(load);
+</script>
+</body>
+</html>
