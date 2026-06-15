@@ -1,6 +1,6 @@
 {
   "name": "tbh-easy-market",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "TBH Easy Market: valor do baú e preços do Mercado Steam do TBH: Task Bar Hero. 100% read-only.",
   "type": "module",
   "main": "main.js",
@@ -28,9 +28,9 @@
     },
     "nsis": {
       "artifactName": "TBH-Easy-Market-Setup-${version}.exe",
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
+      "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
     },
     "publish": {
