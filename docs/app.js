@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnInstaller.href = installerUrl;
     btnPortable.href = portableUrl;
 
+    // Set the latest version text
+    const versionEl = document.getElementById('latest-version');
+    if (versionEl && release.name) {
+      versionEl.textContent = 'Current Release: ' + release.name;
+      versionEl.style.display = 'block';
+    }
+
     // Show the buttons and hide the loading state
     loadingState.style.display = 'none';
     actionButtons.style.opacity = '1';
