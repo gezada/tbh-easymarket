@@ -348,7 +348,7 @@ function createWindow() {
     y: state.bounds.y,
     minWidth: 800,
     minHeight: 600,
-    icon: path.join(__dirname, 'icon', 'tbh-easymarket-icon.ico'),
+    icon: path.join(__dirname, 'icon', 'tbh-easymarket-icon-nobg.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -451,7 +451,10 @@ app.whenReady().then(() => {
   
   // Wait a bit before checking updates so the window can load completely
   setTimeout(() => {
-    autoUpdater.checkForUpdates().catch(e => log(`Update check error: ${e.message}`));
+    const checkUpdate = () => autoUpdater.checkForUpdates().catch(e => log(`Update check error: ${e.message}`));
+    checkUpdate();
+    // Re-check every 10 minutes
+    setInterval(checkUpdate, 10 * 60 * 1000);
   }, 3000);
 
   ipcMain.handle('updater:start-download', () => {
