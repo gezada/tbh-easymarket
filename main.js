@@ -171,7 +171,7 @@ async function fetchAllItems() {
   const items = [];
   let start = 0, total = Infinity;
   while (start < total) {
-    const url = `https://steamcommunity.com/market/search/render/?appid=${APPID}&norender=1&count=100&start=${start}&sort_column=price&sort_dir=desc&country=US&currency=1&l=english`;
+    const url = `https://steamcommunity.com/market/search/render/?appid=${APPID}&norender=1&count=100&start=${start}&sort_column=price&sort_dir=desc&country=US&currency=1`;
     let j;
     try {
       j = await steamGet(url);
@@ -241,7 +241,7 @@ async function apiPrice(query = {}) {
   if (!name) throw new Error('name obrigatorio');
   const hit = priceCache.get(name);
   if (hit && (Date.now() - hit.at) < PRICE_TTL_MS) return hit.data;
-  const url = `https://steamcommunity.com/market/priceoverview/?appid=${APPID}&currency=7&market_hash_name=${encodeURIComponent(name)}&l=english`;
+  const url = `https://steamcommunity.com/market/priceoverview/?appid=${APPID}&currency=7&market_hash_name=${encodeURIComponent(name)}`;
   const j = await steamGet(url);
   const data = { name, brl: j.lowest_price || null, medianBrl: j.median_price || null, volume: j.volume || null };
   priceCache.set(name, { at: Date.now(), data });
@@ -251,7 +251,7 @@ async function apiPrice(query = {}) {
 async function fetchMarketDetail(name) {
   const hit = detailCache.get(name);
   if (hit && (Date.now() - hit.at) < DETAIL_TTL_MS) return hit.data;
-  const url = `https://steamcommunity.com/market/listings/${APPID}/${encodeURIComponent(name)}?l=english`;
+  const url = `https://steamcommunity.com/market/listings/${APPID}/${encodeURIComponent(name)}`;
   const html = await steamGetText(url);
   const buy = html.match(/amtMaxBuyOrder\D+(\d+)/);
   const history = [...html.matchAll(/time\D+(\d+)\D+price_median\D+([0-9.]+)\D+purchases\D+(\d+)/g)];

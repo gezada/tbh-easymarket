@@ -1,13 +1,13 @@
 {
   "name": "tbh-easy-market",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "TBH Easy Market: valor do baú e preços do Mercado Steam do TBH: Task Bar Hero. 100% read-only.",
   "type": "module",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "extract-tables": "node scripts/extract-tbh-tables.mjs",
-    "dist": "node -e \"try{require('fs').readdirSync('dist').filter(f=>/\\.(exe|blockmap)$/.test(f)).forEach(f=>require('fs').unlinkSync('dist/'+f))}catch{}\" && electron-builder",
+    "dist": "node -e \"try{require('fs').readdirSync('dist').filter(f=>/\\.(exe|blockmap)$/.test(f)).forEach(f=>{try{require('fs').unlinkSync('dist/'+f)}catch{}})}catch{}\" && electron-builder",
     "pack": "electron-builder --dir"
   },
   "build": {
