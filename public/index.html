@@ -454,6 +454,7 @@ const itemRarityColor=item=>safeColor(item.color)||rarityColors[String(item.grad
 const stashItemKey=item=>item.marketListed===false?`unlisted:${item.itemKey}`:`market:${item.hash}`;
 const itemLevel=item=>Number(item.level??((item.type.match(/Lv\.?\s*(\d+)/i)||[])[1]||0));
 const marketItemKind=item=>itemLevel(item)>0?'gear':'material';
+const itemSteamUrl=item=>{if(item.url)return item.url;if(item.marketable===false)return null;const k=item.kind||marketItemKind(item);if(k==='gear'){const baseName=item.name.split(' - Lv.')[0];return `https://steamcommunity.com/market/search?appid=3678970&q=${encodeURIComponent(baseName)}`}return `https://steamcommunity.com/market/listings/3678970/${encodeURIComponent(item.name)}`};
 const marketItemType=item=>marketItemKind(item)==='gear'?item.type.split('-')[0].trim():item.type.trim();
 const marketItemGrade=item=>(item.name.match(/\(([^)]+)\)/)||[])[1]||'';
 const itemGrade=item=>String(item.grade||marketItemGrade(item)||rarityByColor[String(item.color||'').toUpperCase()]||'').toUpperCase();
@@ -702,7 +703,8 @@ function renderStash(){
       ? (item.marketable!==false?`${priceColumn(item,'buy',item.qty,'div',true)}${priceColumn(item,'latest',item.qty,'div',true)}${unavailablePriceColumn('sell')}`:unavailablePriceColumns())
       : ['buy','latest','sell'].map(metric=>priceColumn(item,metric,item.qty,'div',true)).join('');
     const equippedTag=item.equipped?`<span class="equipped-tag" title="Equipped by ${escapeHtml((item.heroes||[]).join(', '))}">Equipped</span>`:'';
-    const link=item.url?`<a class="steam-link" href="${item.url}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a>`:'<span class="steam-link-space" aria-hidden="true"></span>';
+    const u=itemSteamUrl(item);
+    const link=u?`<a class="steam-link" href="${u}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a>`:'<span class="steam-link-space" aria-hidden="true"></span>';
     return `<div class="srow${excluded?' excluded':''}"><span class="kind" title="${item.kind==='material'?'Material':'Equipment'}">${item.kind==='material'?'◆':'⚔'}</span><span class="stash-icon" style="--rarity-color:#${rarityColor}">${item.icon?`<img loading="lazy" src="${item.icon}" alt="">`:'<span class="unlisted-icon">?</span>'}<button class="stash-visibility" type="button" data-stash-visibility="${encodeURIComponent(visibilityKey)}" title="${excluded?'Include item in inventory estimates':'Exclude item from inventory estimates'}" aria-label="${excluded?'Include':'Exclude'} ${escapeHtml(item.name)} ${excluded?'in':'from'} inventory estimates">${visibilityIcon(excluded)}</button></span><div class="sn"><div class="sn-title"><b${color?` style="color:#${color}"`:''}>${escapeHtml(item.name)}</b>${equippedTag}</div><small>${escapeHtml(item.type)}${level}${unlisted?` · ${marketNote}`:''}</small></div><div class="qty">x${item.qty}</div>${prices}${link}</div>`;
   }).join(''):'<div class="empty">No items match the selected filters.</div>';
   queueMicrotask(()=>loadMarketDetails(detailItems));
@@ -822,7 +824,9 @@ function renderMarket(){
     const rarityColor=itemRarityColor(item);
     const prices=['buy','latest','sell'].map(metric=>priceColumn(item,metric,1,'td')).join('');
     const kind=marketItemKind(item);
-    return `<tr class="item"><td class="market-kind-cell"><span class="kind" title="${kind==='material'?'Material':'Equipment'}">${kind==='material'?'◆':'⚔'}</span></td><td>${item.icon?`<img class="ic" loading="lazy" src="${item.icon}" alt="" style="border-color:#${rarityColor}">`:''}</td><td><div class="nm"${color?` style="color:#${color}"`:''}><a href="${item.url}" target="_blank" rel="noopener" title="Open on Steam">${escapeHtml(item.name)}</a></div><div class="tp"><span class="market-rank">#${start+index+1}</span> · ${escapeHtml(item.type)}</div></td><td class="ls">${item.listings}</td>${prices}<td class="steam-cell"><a class="steam-link" href="${item.url}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a></td></tr>`;
+    const u=itemSteamUrl(item)||'';
+    const link=u?`<a class="steam-link" href="${u}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a>`:'<span class="steam-link-space" aria-hidden="true"></span>';
+    return `<tr class="item"><td class="market-kind-cell"><span class="kind" title="${kind==='material'?'Material':'Equipment'}">${kind==='material'?'◆':'⚔'}</span></td><td>${item.icon?`<img class="ic" loading="lazy" src="${item.icon}" alt="" style="border-color:#${rarityColor}">`:''}</td><td><div class="nm"${color?` style="color:#${color}"`:''}>${u?`<a href="${u}" target="_blank" rel="noopener" title="Open on Steam">${escapeHtml(item.name)}</a>`:escapeHtml(item.name)}</div><div class="tp"><span class="market-rank">#${start+index+1}</span> · ${escapeHtml(item.type)}</div></td><td class="ls">${item.listings}</td>${prices}<td class="steam-cell">${link}</td></tr>`;
   }).join('');
   $('status').hidden=list.length>0;$('tbl').hidden=list.length===0;
   if(!list.length)$('status').textContent=`No items found for "${$('search').value}"`;
