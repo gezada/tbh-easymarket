@@ -415,7 +415,7 @@ app.whenReady().then(() => {
   
   ipcMain.handle('api:stash', async (event) => {
     if (!tbhSave.saveExists()) return { supported: true, found: false };
-    const market = readListCache();
+    const market = readListCache() || readLegacyListCache();
     if (!market) return { supported: true, found: true, needItems: true };
     return { supported: true, found: true, ...tbhSave.readStash(catalogItemsForStash()) };
   });
