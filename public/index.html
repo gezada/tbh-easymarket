@@ -665,9 +665,9 @@ function updateStashSortHead(){
 function renderStash(){
   $('stash').hidden=false;
   if(!stashData){
-    $('stashBody').innerHTML=`<div class="empty">${escapeHtml(stashMessage)}</div>`;
+    $('stashBody').innerHTML=`<div class="empty"><span class="spin"></span>${escapeHtml(stashMessage)}</div>`;
     $('stashTotal').innerHTML=`<span class="money-main">${formatMoney(0,currency)}</span>`;
-    $('stashCount').textContent='automatic save reading';return;
+    $('stashCount').innerHTML='<span class="spin"></span> automatic save reading';return;
   }
   const items=sortStashItems(filteredStash());
   const countedItems=items.filter(item=>!excludedStashItems.has(stashItemKey(item)));
@@ -1040,15 +1040,22 @@ $('pageFirst').addEventListener('click',()=>{marketPage=1;renderMarket()});
 $('pagePrev').addEventListener('click',()=>{marketPage--;renderMarket()});
 $('pageNext').addEventListener('click',()=>{marketPage++;renderMarket()});
 $('pageLast').addEventListener('click',()=>{marketPage=marketPages;renderMarket()});
+let marketSortAbort=null;
 document.querySelectorAll('th[data-sort]').forEach(th=>th.addEventListener('click',async()=>{
-  if(marketSortPreparing)return;
   const next=th.dataset.sort;sortDir=next===sortKey?-sortDir:(next==='name'?1:-1);sortKey=next;marketPage=1;
+  if(marketSortPreparing&&marketSortAbort){marketSortAbort.abort();marketSortPreparing=false}
   renderMarket();
   if(next==='buy'||next==='latest'){
     marketSortPreparing=true;
+    const ac=new AbortController();marketSortAbort=ac;
     const candidates=filteredMarket();
-    await ensureMarketDetails(candidates,(done,total)=>{$('marketResultCount').textContent=total?`Preparing ${next} sorting · ${done}/${total}`:`${candidates.length} results`});
-    marketSortPreparing=false;renderMarket();
+    try{
+      await ensureMarketDetails(candidates,(done,total)=>{
+        if(ac.signal.aborted)return;
+        $('marketResultCount').textContent=total?`Preparing ${next} sorting · ${done}/${total}`:`${candidates.length} results`;
+      });
+    }catch{}
+    if(!ac.signal.aborted){marketSortPreparing=false;renderMarket()}
   }
 }));
 $('refresh').addEventListener('click',()=>{

@@ -104,7 +104,11 @@ function buildMarketIndex(marketItems) {
 // Índice do mercado por nome lowercase (materiais têm nome próprio: "Void Iron", "Phoenix Ash"...).
 function buildMarketByName(marketItems) {
   const idx = {};
-  for (const m of marketItems) idx[m.name.toLowerCase()] = m;
+  for (const m of marketItems) {
+    idx[m.name.toLowerCase()] = m;
+    // hash_name is always English regardless of API locale — crucial for legacy cache fallback
+    if (m.hash) idx[m.hash.toLowerCase()] = m;
+  }
   return idx;
 }
 

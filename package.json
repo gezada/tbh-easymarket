@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "extract-tables": "node scripts/extract-tbh-tables.mjs",
-    "dist": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && electron-builder",
+    "dist": "node -e \"try{require('fs').readdirSync('dist').filter(f=>/\\.(exe|blockmap)$/.test(f)).forEach(f=>require('fs').unlinkSync('dist/'+f))}catch{}\" && electron-builder",
     "pack": "electron-builder --dir"
   },
   "build": {
