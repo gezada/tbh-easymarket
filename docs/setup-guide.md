@@ -1,118 +1,174 @@
-# Guia de Setup (Desenvolvedor)
+# Developer Setup Guide
 
-> Siga estas instruções para compilar, diagnosticar ou entender a fundo o projeto TBH Easy Market.
-
----
-
-## O que é este projeto
-
-**TBH Easy Market** é um app local que mostra o valor do inventário ("baú") do jogo
-**TBH: Task Bar Hero** (Steam AppID `3678970`) e os preços do Mercado da Comunidade Steam.
-
-- Roda um servidor Node em `http://localhost:5260`.
-- Lê o save do jogo (somente leitura) e os preços públicos da Steam.
-- Tudo roda na máquina do usuário; nada é enviado pra fora.
+> Everything you need to understand, build, and hack on TBH Easy Market.
 
 ---
 
-## ⛔ REGRAS INVIOLÁVEIS (leia antes de agir)
+## 1. Project Overview
 
-1. **NUNCA escreva, edite, mova ou delete o save do jogo.** O save fica em:
-   `%USERPROFILE%\AppData\LocalLow\TesseractStudio\TaskbarHero\SaveFile_Live.es3`.
-   Este app só faz `readFileSync` numa cópia em memória. Se você for sugerir QUALQUER escrita nesse
-   arquivo, **PARE** — isso pode dar ban no usuário. Não faça.
-2. **NÃO automatize compra/venda na Steam, nem injete código no jogo, nem mexa na memória do processo.**
-   Este projeto é estritamente *read-only*. Mantenha assim.
-3. **NÃO suba dados do usuário pra lugar nenhum.** O arquivo `data/save-plain.json` (se existir) contém
-   o inventário pessoal dele. Ele está no `.gitignore` — **nunca** remova essa linha, nunca commite esse
-   arquivo, nunca cole o conteúdo dele em lugar público.
-4. **NÃO peça pro usuário desativar antivírus, rodar como admin sem necessidade, ou colar tokens/senhas.**
-5. Quando em dúvida entre uma solução que escreve em arquivos do jogo e uma que só lê, **escolha sempre
-   a que só lê**.
+**TBH Easy Market** is a free, open-source Electron desktop app for
+[TBH: Task Bar Hero](https://store.steampowered.com/app/3678970/) (Steam AppID `3678970`).
+
+It reads the player's local save file, decrypts the inventory, and cross-references it with
+live Steam Community Market prices — giving you a real-time estimate of your stash value.
+
+- Runs 100% locally on the user's machine.
+- Strictly read-only: no accounts, no logins, no data leaves the computer.
+- Ships as a portable `.exe` and an installer via electron-builder.
 
 ---
 
-## Como o sistema funciona
+## 2. Golden Rules (READ THIS FIRST)
+
+These are non-negotiable. Break any of them and you risk getting users banned or leaking their data.
+
+1. **NEVER write to the save file.** Path: `%USERPROFILE%\AppData\LocalLow\TesseractStudio\TaskbarHero\SaveFile_Live.es3`.
+   The app only calls `readFileSync` on a memory copy. Any write — even renaming, moving, or touching
+   timestamps — could trigger anti-cheat and get the user banned. Don't do it.
+2. **NEVER automate trading, inject into the game process, or access game memory.** This project is
+   read-only. Keep it that way.
+3. **NEVER upload user data.** The file `data/save-plain.json` (decrypted inventory) is in `.gitignore`.
+   Never remove that line, never commit that file, never paste its contents anywhere public.
+4. **NEVER ask users to disable antivirus, run as admin without reason, or paste tokens/passwords.**
+5. **When in doubt between writing and reading — always read.**
+
+---
+
+## 3. Architecture
 
 ```
-Navegador (UI) ──> servidor Node (server.mjs, porta 5260)
-                       ├── /api/items  → preços do Mercado Steam do TBH (cache local)
-                       ├── /api/price  → preço em R$ de um item (Steam priceoverview)
-                       └── /api/stash  → lê o save do TBH e calcula o valor do baú
-                                          (módulo tbh-save.mjs)
+Electron Main Process (main.js)
+├── tbh-save.mjs            → Save decryption + inventory parsing
+├── Steam Market API         → Prices, listings, price history
+├── ECB Exchange Rates API   → USD↔BRL (and 30+ currencies) via XML feed
+├── Disk Cache (userData/)   → items, catalog, details, exchange rates
+│     items-3678970-v2.json
+│     market-catalog-3678970-v2.json
+│     market-details-3678970.json
+│     exchange-rates.json
+└── IPC Bridge (preload.js)
+    └── Renderer (public/index.html) → All UI logic lives in a single HTML file
 ```
 
-**Fluxo do baú (`tbh-save.mjs`):**
-1. Lê e descriptografa uma cópia do `SaveFile_Live.es3` (Easy Save 3 / AES). A senha é uma chave do
-   **jogo**, em texto plano nos assets, e é extraída automaticamente. Não é segredo do usuário.
-2. Lê a "tabela mestra" de itens dos assets do jogo (`sharedassets0.assets`): cada item tem
-   `ItemKey → grade, tipo, nível, se é vendável`.
-3. Cruza com os preços do Mercado:
-   - **Equipamentos** casam por `(tipo|grade|nível)` — ex: "Sword" + "Immortal" + "Lv80".
-   - **Materiais** casam por **nome** (ex: "Void Iron"), que vem da tabela de localização Unity
-     (opcional, precisa de Python+UnityPy).
+Communication between main and renderer goes through Electron's `contextBridge` + `ipcRenderer.invoke`.
+The renderer never touches Node APIs directly — everything goes through the `window.api` object.
 
----
+### IPC Channels
 
-## Requisitos
-
-- **Node.js 20+** — obrigatório. (`node --version` pra checar.)
-- **TBH instalado** e aberto pelo menos uma vez (pra existir o save).
-- **Python + UnityPy** — OPCIONAL, só pra mostrar o nome/preço dos materiais.
-
----
-
-## Roteiro de instalação
-
-1. Verifique se você tem o Node instalado: rode `node --version`.
-   - Se der erro, instale de https://nodejs.org (versão LTS) e **reinicie o PC**.
-2. Dê dois cliques em `tbh-easymarket.bat` (ou rode `npm start` na pasta).
-3. Confirme que abriu `http://localhost:5260` e que o baú apareceu.
-4. Se os materiais não tiverem nome, você pode (opcional) instalar Python+UnityPy e rodar
-   `npm run extract-tables`.
-
-## Erros comuns e como resolver
-
-| Sintoma | Causa | O que fazer |
+| Channel | Direction | What it does |
 |---|---|---|
-| `node` não é reconhecido | Node não instalado / PATH | Instalar Node LTS, reiniciar o PC |
-| `save do TBH não encontrado` | Save não existe | Abrir o jogo uma vez |
-| `assets do TBH não encontrados` | Steam em pasta incomum | Definir `set TBH_GAME_DIR=<pasta>\TaskBarHero_Data` antes de iniciar |
-| Porta 5260 ocupada | Outra instância rodando | Fechar a janela preta antiga, ou mudar `GSM_PORT` |
-| Materiais sem nome | Falta tabela de localização | `pip install UnityPy` + `npm run extract-tables` (opcional) |
-| Preço total parece errado | Steam respondeu em moeda da região | O app força USD (`country=US&currency=1`); apague `data/items-3678970.json` e reinicie pra repuxar |
+| `api:items` | Renderer → Main | Fetches the full market item list (paginated from Steam, cached locally) |
+| `api:price` | Renderer → Main | Gets the BRL price for a specific item via `priceoverview` |
+| `api:market-details` | Renderer → Main | Scrapes buy orders + price history from Steam listing pages |
+| `api:exchange-rates` | Renderer → Main | Returns ECB exchange rates (base USD, cached 6h) |
+| `api:stash` | Renderer → Main | Reads save, cross-references with market catalog, returns inventory |
+| `updater:update-available` | Main → Renderer | Notifies UI that a new version exists |
+| `updater:download-progress` | Main → Renderer | Streams download percentage to UI |
+| `updater:update-downloaded` | Main → Renderer | Signals that the update is ready to install |
+| `updater:start-download` | Renderer → Main | User triggered: begin downloading the update |
+| `updater:install-update` | Renderer → Main | User triggered: quit and install |
+
 ---
 
-## Se o jogo for atualizado e parar de funcionar
+## 4. How the Save Works
 
-Uma atualização do TBH pode mudar a chave do save ou a tabela de itens. Para reextrair tudo:
+- **File:** `SaveFile_Live.es3` in `%USERPROFILE%\AppData\LocalLow\TesseractStudio\TaskbarHero\`
+- **Encryption:** Easy Save 3 format → AES-128-CBC with a key derived via PBKDF2-SHA1.
+- **Password:** Stored in plaintext inside the game's `sharedassets0.assets`. The app auto-extracts it
+  at runtime — it's not a user secret, it's a game asset.
+- **Master item table:** A CSV embedded in the same assets file. Maps `ItemKey → GRADE, GEARTYPE, Level, IsCanExchangeMarketable`.
+- **Equipment matching:** `(geartype|grade|level)` → Steam Market item name (e.g., Sword + Immortal + Lv80).
+- **Material matching:** The localized display name (e.g., "Void Iron") maps directly to the market listing name.
+  Material names require Python + UnityPy extraction — this step is optional.
 
-```bat
+---
+
+## 5. Requirements
+
+| Requirement | Required? | Notes |
+|---|---|---|
+| Node.js 20+ | **Yes** | Run `node --version` to check |
+| TBH installed + opened once | **Yes** | The save file must exist |
+| Python 3.x + UnityPy | Optional | Only needed for material name extraction |
+
+---
+
+## 6. Dev Setup
+
+```bash
+git clone https://github.com/gezada/tbh-easymarket.git
+cd tbh-easymarket
+npm install
+npm start          # launches Electron in dev mode
+```
+
+That's it. The app will open, find the save file automatically, and start pulling prices from Steam.
+
+If you want material names (optional):
+
+```bash
+pip install UnityPy
 npm run extract-tables
 ```
 
-Se a senha do save (Easy Save 3) mudar e a auto-extração falhar, ela pode ser encontrada nos assets
-do jogo procurando o texto `ES3Defaults` seguido de `SaveFile_Live.es3` — a chave vem logo depois,
-em texto legível. Defina-a manualmente com `set TBH_ES3_PASSWORD=<chave>`.
-
 ---
 
-## Variáveis de ambiente (configuração avançada)
+## 7. Project File Map
 
-| Variável | Para quê |
+| File | Purpose |
 |---|---|
-| `GSM_PORT` | Mudar a porta (padrão 5260) |
-| `TBH_GAME_DIR` | Apontar a pasta `TaskBarHero_Data` manualmente |
-| `TBH_ES3_PASSWORD` | Forçar a senha do save se a auto-extração falhar |
+| `main.js` | Electron main process — IPC handlers, Steam API client, disk cache, rate-limit queue, auto-updater |
+| `preload.js` | Secure context bridge between main and renderer (exposes `window.api`) |
+| `public/index.html` | Entire UI — HTML + CSS + JS in one file |
+| `tbh-save.mjs` | Save decryption, asset extraction, item table parsing, inventory aggregation |
+| `scripts/extract-tbh-tables.mjs` | Optional: Python-based material name extraction via UnityPy |
+| `package.json` | Version, dependencies, npm scripts, electron-builder config |
+| `.github/workflows/release.yml` | CI/CD — builds and publishes releases on tag push |
+| `docs/` | Landing page (GitHub Pages) + this guide |
 
 ---
 
-## Limites importantes (não prometa isso ao usuário)
+## 8. Troubleshooting
 
-- O app **não vende nem compra** nada — só mostra preços. A venda é feita pelo usuário na Steam.
-- Materiais que **não têm listagem** na Steam não entram no valor (não há preço pra eles — isso é correto).
-- Os valores são **estimativas** do preço atual de venda; o mercado muda o tempo todo.
+| Symptom | Cause | Fix |
+|---|---|---|
+| `'node' is not recognized` | Node.js not installed or not in PATH | Install [Node LTS](https://nodejs.org), restart your PC |
+| `save not found` | TBH save file doesn't exist yet | Open the game at least once, then restart the app |
+| `assets not found` | Steam installed in a non-standard location | Set `TBH_GAME_DIR=C:\path\to\TaskBarHero_Data` |
+| Port 5260 occupied | Another instance still running (legacy web mode) | Close the old instance, or set `GSM_PORT` to a different port |
+| Materials show no name | Localization table not extracted | `pip install UnityPy` then `npm run extract-tables` |
+| Prices seem wrong / wrong currency | Steam returned prices in your region's currency | Delete `items-3678970-v2.json` from userData, restart the app |
+| App won't start on Windows 7/8 | Electron requires Windows 10+ | Upgrade your OS |
 
 ---
 
-Feito por **EuSouOGiba** · youtube.com/@eusouogiba · eusouogiba.com
+## 9. Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `GSM_PORT` | Override the default port (5260). Only relevant for legacy web mode. |
+| `TBH_GAME_DIR` | Point directly to the `TaskBarHero_Data` folder if auto-detection fails. |
+| `TBH_ES3_PASSWORD` | Manually set the save decryption password if auto-extraction breaks. |
+
+---
+
+## 10. When the Game Updates
+
+Game patches can change the item table or (rarely) the save encryption password.
+
+1. **Re-extract item tables:** `npm run extract-tables`
+2. **If the save password changed:** Open `sharedassets0.assets` in a hex editor, search for
+   `ES3Defaults` followed by `SaveFile_Live.es3` — the password is in plaintext nearby.
+   Then set it manually: `set TBH_ES3_PASSWORD=<the-new-password>`
+
+---
+
+## 11. Important Limitations
+
+- **Does NOT buy or sell anything.** It only reads and displays prices. All trading happens through Steam.
+- **Materials without Steam listings** are excluded from the total value — there's simply no price data for them.
+- **Values are estimates** based on current market listings. Prices fluctuate constantly; what you see is a snapshot.
+
+---
+
+Made by **EuSouOGiba** · [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba) · [eusouogiba.com](https://eusouogiba.com)

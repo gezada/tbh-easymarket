@@ -1,117 +1,131 @@
 # TBH Easy Market
 
-**Descubra quanto vale o seu baú no TBH: Task Bar Hero sem abrir a Steam.**
+**Know exactly what your stash is worth — before the market does.**
 
-Um app que roda no seu PC e mostra:
-
-- 💰 **O valor total do seu inventário** (equipamentos + materiais), lido direto do save do jogo. Você não digita nada.
-- 🔎 **Os preços do Mercado da Steam** de todos os itens, do mais caro pro mais barato, com busca instantânea.
-- 🪙 Preço em **dólar e em real (R$)**.
-
-Feito por **[EuSouOGiba](https://eusouogiba.com)** · [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba)
-
-![demo](docs/demo.png)
+A free, open-source Windows app that reads your [Task Bar Hero](https://store.steampowered.com/app/3678970/TBH_Task_Bar_Hero/) save file and shows the real-time value of every item you own, pulled straight from the Steam Community Market. No guessing, no spreadsheets, no nonsense.
 
 ---
 
-## ✅ É seguro? Vou tomar ban?
+## ✨ Features
 
-**Não.** Esse app **só LÊ arquivos** que já estão no seu computador. Ele:
-
-- ✅ Lê uma **cópia** do save do jogo (na memória) só pra calcular o valor.
-- ✅ Usa os mesmos endereços públicos de preço que o site da Steam usa.
-- ❌ **NÃO** modifica o seu save.
-- ❌ **NÃO** mexe no jogo enquanto ele roda (não injeta nada, não trapaceia).
-- ❌ **NÃO** automatiza compra/venda.
-- ❌ **NÃO** envia seus dados pra lugar nenhum (roda 100% no seu PC).
-
-Ban acontece quando alguém **modifica** o save pra trapacear ou automatiza trocas. Nada disso é feito aqui. É leitura passiva, como abrir o arquivo no Bloco de Notas.
-
-> ⚠️ Ainda assim, use por sua conta e risco. Este é um projeto da comunidade, sem vínculo com a Valve ou com os criadores do TBH.
+- 💰 **Total inventory value** — equipment and materials, all in one place
+- 📊 **Live Steam Market prices** — buy orders, sell listings, and latest sold price
+- 💱 **USD & BRL support** — with ECB exchange rates, updated automatically
+- 🎯 **Smart filters** — by class (Knight, Ranger, Sorcerer, Priest, Slayer, Hunter), equipment type, rarity grade
+- 👁️ **Show/hide equipped items** — focus on what you can actually sell
+- 🏷️ **Marketable-only toggle** — cut the noise, see what matters
+- 🔄 **Auto-update detection** — the app tells you when a new version drops
+- 🔒 **100% local, 100% read-only, 100% ban-safe** — your save is never modified
 
 ---
 
-## 🚀 Como instalar (passo a passo pra quem nunca programou)
+## 📥 Download
 
-### Passo 1 — Instalar o Node.js
+Head over to [**GitHub Releases**](../../releases) and grab the latest version:
 
-O app precisa do **Node.js** (um programa gratuito que roda o código).
+| Version | File | What it does |
+|---------|------|-------------|
+| **Installer** | `TBH-Easy-Market-Setup-X.X.X.exe` | Installs normally, auto-updates itself |
+| **Portable** | `TBH-Easy-Market-Portable-X.X.X.exe` | No install needed — just run it |
 
-1. Acesse 👉 **https://nodejs.org**
-2. Baixe a versão **"LTS"** (o botão verde da esquerda).
-3. Instale clicando "Avançar / Next" até o fim.
-
-### Passo 2 — Baixar este app
-
-- Clique no botão verde **"Code"** aqui em cima nesta página → **"Download ZIP"**.
-- Extraia o ZIP numa pasta fácil, ex: `C:\tbh-easy-market`.
-
-### Passo 3 — Abrir e rodar
-
-1. Entre na pasta que você extraiu.
-2. **Dê dois cliques** no arquivo **`tbh-easymarket.bat`**.
-3. Vai abrir uma janela preta (é normal!) e o app abre sozinho no seu navegador.
-
-Pronto! 🎉 O seu baú aparece preenchido automaticamente.
-
-> Da próxima vez, é só dar dois cliques no `tbh-easymarket.bat` de novo.
+Pick whichever you prefer. Both do the exact same thing.
 
 ---
 
-## 🆘 Deu erro? (problemas comuns)
+## 🛡️ Is this safe? Will I get banned?
 
-| Problema | Solução |
-|---|---|
-| "node não é reconhecido" | Você não instalou o Node.js (Passo 1) ou precisa **reiniciar o PC** depois de instalar. |
-| "save do TBH não encontrado" | Abra o TBH pelo menos uma vez pra ele criar o save. |
-| "assets do TBH não encontrados" | O jogo está instalado num lugar diferente. Veja **"Steam em outra pasta"** abaixo. |
-| Os nomes dos materiais não aparecem | Normal! Os nomes dos materiais são opcionais — veja a seção **"Mostrar nomes dos materiais"**. |
-| A página não abre | Abra o navegador e digite: `http://localhost:5260` |
+**No. You will not get banned.**
 
-### Steam em outra pasta
+Here's what TBH Easy Market does:
+- ✅ Reads your local save file (the same way Notepad would)
+- ✅ Fetches public price data from Steam's own market endpoints
 
-O app procura o TBH automaticamente nos drives C, D, E… Se você instalou em um lugar incomum, descubra a pasta `TaskBarHero_Data` (clique direito no jogo na Steam → Gerenciar → Procurar arquivos locais) e rode assim, trocando o caminho:
+Here's what it does **NOT** do:
+- ❌ Modify your save file — ever
+- ❌ Inject code into the game
+- ❌ Automate trading or any in-game action
+- ❌ Send your data anywhere
 
-```bat
-set TBH_GAME_DIR=D:\MinhaPasta\TaskbarHero\TaskBarHero_Data
-tbh-easymarket.bat
+It's literally the equivalent of opening your save in a text editor and checking what's inside. The game doesn't even know the app exists.
+
+---
+
+## 🚀 Quick Start
+
+1. **Make sure TBH has been opened at least once** — the app needs the save file to exist
+2. **Download** the installer or portable version from [Releases](../../releases)
+3. **Run it** — that's it. The app finds your save automatically
+
+If you installed TBH in a non-default location, set the `TBH_GAME_DIR` environment variable to point to your `TaskBarHero_Data` folder.
+
+---
+
+## 🔧 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `'node' is not recognized` | Install [Node.js LTS](https://nodejs.org), then restart your PC |
+| `save do TBH não encontrado` | Open TBH at least once so it creates the save file |
+| `assets do TBH não encontrados` | Game is installed in a custom path — set `TBH_GAME_DIR` env var |
+| Material names are missing | Optional: install Python, run `pip install UnityPy`, then `npm run extract-tables` |
+| App won't open | Check if another instance is already running (system tray, task manager) |
+
+---
+
+## 🧑‍💻 For Developers
+
+Want to poke around, contribute, or build from source? Welcome aboard.
+
+### Stack
+
+- **Electron + Node.js** — that's the whole runtime
+- **electron-builder** for packaging, **electron-updater** for auto-updates
+- No heavyweight frameworks, no bloated dependency trees
+
+### How the sausage is made
+
+- **Save decryption** — TBH uses Easy Save 3 (AES-128-CBC with PBKDF2-SHA1). The encryption key is extracted automatically from the game's own assets at runtime.
+- **Price fetching** — hits Steam's public endpoints (`/market/search/render` and `/priceoverview`), with built-in request throttling and disk-based caching so you don't hammer Valve's servers.
+- **Item mapping** — a master table extracted from game assets maps each `ItemKey` to its grade, type, and level. Material names are matched by their localized strings (extracting those requires Python + UnityPy — totally optional).
+
+### Building
+
+```bash
+# Install dependencies
+npm install
+
+# Run in dev mode
+npm start
+
+# Build installer + portable .exe
+npm run dist
 ```
 
----
+### CI/CD
 
-## 🔩 Mostrar os nomes dos materiais (opcional)
+Push a version tag (`v*`) and GitHub Actions takes care of the rest — builds both variants and publishes a release automatically.
 
-Os **equipamentos** (espadas, armaduras) já aparecem com preço sem configurar nada.
+### Environment Variables
 
-Os **materiais** (Void Iron, Phoenix Ash…) têm nome próprio guardado de forma compactada no jogo. Pra destravar os nomes deles, rode uma vez:
-
-1. Instale o Python: 👉 https://www.python.org/downloads (marque "Add Python to PATH" na instalação).
-2. Abra a janela preta na pasta do app e rode:
-   ```bat
-   pip install UnityPy
-   npm run extract-tables
-   ```
-3. Reinicie o app. Agora os materiais aparecem com nome e preço também.
-
-Sem isso, o app funciona normal — só não soma os materiais que têm nome próprio.
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `TBH_GAME_DIR` | auto-detected | Path to `TaskBarHero_Data` if auto-detection fails |
+| `TBH_ES3_PASSWORD` | auto-extracted | Force a specific save decryption password |
+| `GSM_PORT` | `5260` | Change the port (legacy web mode only) |
 
 ---
 
-## 🛠️ Pra quem é técnico
+## 📄 License
 
-- **Stack:** Node puro (sem dependências), servidor HTTP + UI HTML única. Python+UnityPy só pra extrair nomes de materiais (opcional).
-- **Preços:** endpoints públicos `steamcommunity.com/market/search/render` e `/priceoverview`, com throttle e cache em disco.
-- **Save:** Easy Save 3 (AES-128-CBC, PBKDF2-SHA1). A chave fica em texto plano nos assets do jogo e é auto-extraída.
-- **Mapeamento item→preço:** tabela mestra dos assets (`ItemKey → grade/tipo/nível`) casa com o `type` do mercado; materiais via localização Unity.
-
-### Gerar um ZIP para distribuição
-
-Use `npm run build:zip`. O arquivo será criado em `dist/` com uma pasta raiz curta e versionada. O pacote não inclui `.git`, caches de desenvolvimento, screenshots ou documentação interna, evitando o erro `MAX_PATH` ao extrair no Windows.
+MIT — do whatever you want with it. See [LICENSE](LICENSE) for the full text.
 
 ---
 
-## 📄 Licença
+## 🙌 Credits
 
-MIT — use, modifique e compartilhe à vontade. Se ajudar, deixa uma estrela ⭐ e se inscreve no canal!
+Built by **EuSouOGiba**
 
-**EuSouOGiba** · [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba) · [eusouogiba.com](https://eusouogiba.com)
+- 🌐 [eusouogiba.com](https://eusouogiba.com)
+- 🎬 [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba)
+
+If this helped you figure out what your stash is actually worth, consider dropping a ⭐ on the repo. It means a lot.
