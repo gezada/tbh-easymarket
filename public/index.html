@@ -337,10 +337,7 @@
       </div>
       <div class="stash-summary">
         <div class="stash-summary-options">
-          <label class="market-check"><input id="showUnlisted" type="checkbox"> Show off-market items <span id="unlistedCount">0</span></label>
-          <label class="market-check"><input id="showEquipped" type="checkbox"> Show equipped items <span id="equippedCount">0</span></label>
-          <label class="market-check toggle-check" id="equippedOnlyControl" hidden><input id="equippedOnly" type="checkbox"><span class="toggle-track" aria-hidden="true"></span> Equipped only</label>
-          <label class="market-check" id="marketableOnlyControl" hidden><input id="marketableOnly" type="checkbox" checked> Marketable only</label>
+          <label class="market-check" id="marketableOnlyControl"><input id="marketableOnly" type="checkbox" checked> Marketable only <span id="unlistedCount"></span></label>
           <span class="inline-label">Price sort:</span><span class="compact-segment" aria-label="Inventory price sorting basis"><button class="active" type="button" data-stash-sort-mode="total">Total</button><button type="button" data-stash-sort-mode="unit">Unit</button></span><span class="estimate-tabs unit-sort-tabs" id="unitSortTabs" aria-label="Unit price sorting metric" hidden><button type="button" data-unit-sort="buy">Buy</button><button type="button" data-unit-sort="latest">Latest</button><button class="active" type="button" data-unit-sort="sell">Sell</button></span>
         </div>
       </div>
@@ -436,7 +433,7 @@ let exchangeRates={USD:1};
 let currency=readCurrencyPreference();
 let stashEstimate='sell';
 let stashSortKey='sell',stashSortDir=-1,stashSortMode='total';
-let stashFilter='all',stashTypes=new Set(),stashRarities=new Set(),stashCharacters=new Set(),levelMin=0,levelMax=100,showUnlisted=false,showEquipped=false,equippedOnly=false,marketableOnly=true;
+let stashFilter='all',stashTypes=new Set(),stashRarities=new Set(),stashCharacters=new Set(),levelMin=0,levelMax=100,showEquipped=false,equippedOnly=false,marketableOnly=true;
 let marketKind='all',marketTypes=new Set(),marketRarities=new Set(),marketCharacters=new Set(),marketLevelMin=0,marketLevelMax=100;
 let marketPage=1,marketPageSize=10,marketPages=1;
 let marketSortPreparing=false;
@@ -617,11 +614,11 @@ function filteredStash(){
 function stashSource(){
   if(!stashData)return[];
   const equipped=(stashData.equippedItems||[]).filter(item=>{
-    if(marketableOnly&&!item.marketable)return false;
+    if(marketableOnly&&!item.marketListed)return false;
     return true;
   });
   const source=equippedOnly?[...equipped]:[...stashData.items];
-  if(!equippedOnly&&showUnlisted)source.push(...(stashData.unlistedItems||[]));
+  if(!equippedOnly&&!marketableOnly)source.push(...(stashData.unlistedItems||[]));
   if(!equippedOnly&&showEquipped)source.push(...equipped);
   const merged=new Map();
   for(const item of source){
@@ -678,7 +675,7 @@ function renderStash(){
   const buyBrlCents=countedDetailItems.reduce((sum,item)=>sum+(marketDetails.get(item.hash)?.buyBrlCents||0)*item.qty,0);
   const latestBrlCents=countedDetailItems.reduce((sum,item)=>sum+(marketDetails.get(item.hash)?.latestBrlCents||0)*item.qty,0);
   const detailsComplete=countedDetailItems.every(item=>marketDetails.has(item.hash));
-  $('unlistedCount').textContent=`(${stashData.unpricedItems})`;
+  $('unlistedCount').textContent=stashData.unpricedItems?`(${stashData.unpricedItems})`:'';
   $('equippedCount').textContent=`(${stashData.equippedCount||0})`;
   const totals={
     buy:{label:'Buy estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(buyBrlCents)}</span>`:'<span class="money-main">Loading...</span>',short:detailsComplete?formatBrlMoney(buyBrlCents):'loading...'},
@@ -974,7 +971,7 @@ document.querySelectorAll('[data-unit-sort]').forEach(button=>button.addEventLis
 }));
 $('levelMin').addEventListener('input',()=>updateLevelRange('min'));
 $('levelMax').addEventListener('input',()=>updateLevelRange('max'));
-$('showUnlisted').addEventListener('change',event=>{showUnlisted=event.target.checked;populateStashOptions();renderStash()});
+
 $('stashBody').addEventListener('click',event=>{
   const button=event.target.closest('[data-stash-visibility]');if(!button)return;
   const encodedKey=button.dataset.stashVisibility,key=decodeURIComponent(encodedKey);
@@ -987,10 +984,9 @@ $('stashBody').addEventListener('click',event=>{
   }
 });
 $('showEquipped').addEventListener('change',event=>{
-  showEquipped=event.target.checked;$('equippedOnlyControl').hidden=!showEquipped;
-  $('marketableOnlyControl').hidden=!showEquipped;
-  if(showEquipped){marketableOnly=true;$('marketableOnly').checked=true}
-  else{equippedOnly=false;$('equippedOnly').checked=false}
+  showEquipped=event.target.checked;
+  $('equippedOnlyControl').hidden=!showEquipped;
+  if(!showEquipped){equippedOnly=false;$('equippedOnly').checked=false}
   populateStashOptions();renderStash();
 });
 $('equippedOnly').addEventListener('change',event=>{equippedOnly=event.target.checked;populateStashOptions();renderStash()});
@@ -998,11 +994,11 @@ $('marketableOnly').addEventListener('change',event=>{
   marketableOnly=event.target.checked;populateStashOptions();renderStash();
 });
 $('stashClear').addEventListener('click',()=>{
-  stashFilter='all';stashTypes.clear();stashRarities.clear();stashCharacters.clear();levelMin=0;levelMax=100;showUnlisted=false;showEquipped=false;equippedOnly=false;marketableOnly=true;stashSortMode='total';stashSortKey='sell';stashSortDir=-1;
+  stashFilter='all';stashTypes.clear();stashRarities.clear();stashCharacters.clear();levelMin=0;levelMax=100;showEquipped=false;equippedOnly=false;marketableOnly=true;stashSortMode='total';stashSortKey='sell';stashSortDir=-1;
   document.querySelectorAll('[data-stash-filter]').forEach(button=>button.classList.toggle('active',button.dataset.stashFilter==='all'));
   document.querySelectorAll('[data-stash-sort-mode]').forEach(button=>button.classList.toggle('active',button.dataset.stashSortMode==='total'));
   $('unitSortTabs').hidden=true;
-  $('showUnlisted').checked=false;$('showEquipped').checked=false;$('equippedOnly').checked=false;$('marketableOnly').checked=true;$('equippedOnlyControl').hidden=true;$('marketableOnlyControl').hidden=true;$('levelFilter').hidden=true;closeMultiSelects();
+  $('showEquipped').checked=false;$('equippedOnly').checked=false;$('marketableOnly').checked=true;$('equippedOnlyControl').hidden=true;$('levelFilter').hidden=true;closeMultiSelects();
   $('levelMin').value=0;$('levelMax').value=validLevels.length-1;$('levelLabel').textContent='0 - 100';$('levelFill').style.left='0%';$('levelFill').style.right='0%';
   populateStashOptions();renderStash();
 });
