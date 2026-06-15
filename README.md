@@ -6,20 +6,20 @@ A free, open-source Windows app that reads your [Task Bar Hero](https://store.st
 
 ---
 
-## ✨ Features
+## Features
 
-- 💰 **Total inventory value** — equipment and materials, all in one place
-- 📊 **Live Steam Market prices** — buy orders, sell listings, and latest sold price
-- 💱 **USD & BRL support** — with ECB exchange rates, updated automatically
-- 🎯 **Smart filters** — by class (Knight, Ranger, Sorcerer, Priest, Slayer, Hunter), equipment type, rarity grade
-- 👁️ **Show/hide equipped items** — focus on what you can actually sell
-- 🏷️ **Marketable-only toggle** — cut the noise, see what matters
-- 🔄 **Auto-update detection** — the app tells you when a new version drops
-- 🔒 **100% local, 100% read-only, 100% ban-safe** — your save is never modified
+- **Total inventory value** — equipment and materials, all in one place
+- **Live Steam Market prices** — buy orders, sell listings, and latest sold price
+- **USD & BRL support** — with ECB exchange rates, updated automatically
+- **Smart filters** — by class (Knight, Ranger, Sorcerer, Priest, Slayer, Hunter), equipment type, rarity grade
+- **Show/hide equipped items** — focus on what you can actually sell
+- **Marketable-only toggle** — cut the noise, see what matters
+- **Auto-update detection** — the app tells you when a new version drops
+- **100% local, 100% read-only, 100% ban-safe** — your save is never modified
 
 ---
 
-## 📥 Download
+## Download
 
 Head over to [**GitHub Releases**](../../releases) and grab the latest version:
 
@@ -32,7 +32,7 @@ Pick whichever you prefer. Both do the exact same thing.
 
 ---
 
-## 🛡️ Is this safe? Will I get banned?
+## Is this safe? Will I get banned?
 
 **No. You will not get banned.**
 
@@ -50,7 +50,7 @@ It's literally the equivalent of opening your save in a text editor and checking
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Make sure TBH has been opened at least once** — the app needs the save file to exist
 2. **Download** the installer or portable version from [Releases](../../releases)
@@ -60,7 +60,7 @@ If you installed TBH in a non-default location, set the `TBH_GAME_DIR` environme
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
@@ -72,7 +72,7 @@ If you installed TBH in a non-default location, set the `TBH_GAME_DIR` environme
 
 ---
 
-## 🧑‍💻 For Developers
+## For Developers
 
 Want to poke around, contribute, or build from source? Welcome aboard.
 
@@ -115,17 +115,17 @@ Push a version tag (`v*`) and GitHub Actions takes care of the rest — builds b
 
 ---
 
-## 📄 License
+## License
 
 MIT — do whatever you want with it. See [LICENSE](LICENSE) for the full text.
 
 ---
 
-## 🙌 Credits
+## Credits
 
-Built by **EuSouOGiba**
+Built by **Ge Alves**
 
-- 🌐 [eusouogiba.com](https://eusouogiba.com)
-- 🎬 [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba)
+- [x.com/omwgeorge](https://x.com/omwgeorge)
+- [instagram.com/omwgeorge](https://instagram.com/omwgeorge)
 
-If this helped you figure out what your stash is actually worth, consider dropping a ⭐ on the repo. It means a lot.
+If this helped you figure out what your stash is actually worth, consider dropping a star on the repo.

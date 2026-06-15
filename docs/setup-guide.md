@@ -171,4 +171,4 @@ Game patches can change the item table or (rarely) the save encryption password.
 
 ---
 
-Made by **EuSouOGiba** · [youtube.com/@eusouogiba](https://youtube.com/@eusouogiba) · [eusouogiba.com](https://eusouogiba.com)
+Made by **Ge Alves** · [x.com/omwgeorge](https://x.com/omwgeorge) · [instagram.com/omwgeorge](https://instagram.com/omwgeorge)
