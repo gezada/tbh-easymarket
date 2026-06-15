@@ -615,13 +615,14 @@ function filteredStash(){
 
 function stashSource(){
   if(!stashData)return[];
-  const equipped=(stashData.equippedItems||[]).filter(item=>{
-    if(marketableOnly&&!item.marketListed)return false;
-    return true;
-  });
-  const source=equippedOnly?[...equipped]:[...stashData.items];
-  if(!equippedOnly&&!marketableOnly)source.push(...(stashData.unlistedItems||[]));
-  if(!equippedOnly&&showEquipped)source.push(...equipped);
+  let rawSource=[];
+  if(equippedOnly){
+    rawSource=[...(stashData.equippedItems||[])];
+  }else{
+    rawSource=[...stashData.items,...(stashData.unlistedItems||[])];
+    if(showEquipped)rawSource.push(...(stashData.equippedItems||[]));
+  }
+  const source=rawSource.filter(item=>!marketableOnly||item.marketable);
   const merged=new Map();
   for(const item of source){
     const key=item.marketListed===false?`unlisted:${item.itemKey}`:`market:${item.hash}`;

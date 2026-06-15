@@ -47,7 +47,7 @@ function findGameDataDir() {
 }
 const ASSET_CANDIDATES = (() => { const d = findGameDataDir(); return d ? [path.join(d, 'sharedassets0.assets')] : []; })();
 
-const GRADE_MAP = { DIVINE:'Divine', ARCANA:'Arcana', IMMORTAL:'Immortal', LEGENDARY:'Legendary', BEYOND:'Beyond', EPIC:'Epic', RARE:'Rare' };
+const GRADE_MAP = { DIVINE:'Divine', ARCANA:'Arcana', IMMORTAL:'Immortal', LEGENDARY:'Legendary', BEYOND:'Beyond', UNIQUE:'Unique', EPIC:'Epic', RARE:'Rare', UNCOMMON:'Uncommon', COMMON:'Common' };
 
 function decryptES3(buf, password) {
   const iv = buf.subarray(0, 16);
