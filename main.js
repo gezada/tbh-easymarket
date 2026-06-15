@@ -125,6 +125,11 @@ function readListCache() {
   try { return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')); } catch { return null; }
 }
 
+function readLegacyListCache() {
+  const legacyPath = path.join(DATA, `items-${APPID}.json`);
+  try { return JSON.parse(fs.readFileSync(legacyPath, 'utf8')); } catch { return null; }
+}
+
 function readCatalog() {
   return readJson(CATALOG_PATH, { version: 1, updatedAt: 0, items: [] });
 }
@@ -157,7 +162,7 @@ function updateCatalog(activeItems) {
 function catalogItemsForStash() {
   const catalog = readCatalog();
   if (catalog.items?.length) return catalog.items;
-  const current = readListCache();
+  const current = readListCache() || readLegacyListCache();
   if (current?.items?.length) return updateCatalog(current.items).items;
   return [];
 }
@@ -221,8 +226,14 @@ async function apiItems(query = {}) {
     refreshDedup().catch(e => log(`refresh bg falhou: ${e.message}`));
     return { ...cached, items: cached.items.filter(item => item.priceCents > 0), stale: true, refreshing: true };
   }
-  const result = await refreshDedup();
-  return { ...result, items: result.items.filter(item => item.priceCents > 0), stale: false };
+  try {
+    const result = await refreshDedup();
+    return { ...result, items: result.items.filter(item => item.priceCents > 0), stale: false };
+  } catch (e) {
+    const legacy = readLegacyListCache();
+    if (legacy) return { ...legacy, items: legacy.items.filter(item => item.priceCents > 0), stale: true, fallback: true };
+    throw e;
+  }
 }
 
 async function apiPrice(query = {}) {

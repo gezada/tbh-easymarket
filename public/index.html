@@ -918,7 +918,14 @@ async function load(force=false,silent=false){
       clearTimeout(marketFollowupTimer);
       marketFollowupTimer=setTimeout(()=>load(false,true),45000);
     }
-  }catch(error){if(!silent)$('status').textContent=`Error: ${error.message}. Try refreshing again in a minute.`}
+  }catch(error){
+    if(!silent){
+      let msg=`⚠️ Could not load market data: ${error.message}. Try refreshing again in a minute.`;
+      if(error.message.includes('rate-limited')) msg=`⚠️ Steam Rate Limit: The Steam API is temporarily blocking requests. Try again in a few minutes.`;
+      $('status').innerHTML=`<span style="color:#ffaa00;">${escapeHtml(msg)}</span>`;
+      if(stashData===null) $('stashBody').innerHTML=`<div class="empty" style="color:#ffaa00;">${escapeHtml(msg)}</div>`;
+    }
+  }
 }
 
 document.querySelectorAll('[data-currency]').forEach(button=>button.addEventListener('click',()=>{
