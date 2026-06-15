@@ -338,6 +338,8 @@
       <div class="stash-summary">
         <div class="stash-summary-options">
           <label class="market-check" id="marketableOnlyControl"><input id="marketableOnly" type="checkbox" checked> Marketable only <span id="unlistedCount"></span></label>
+          <label class="market-check"><input id="showEquipped" type="checkbox"> Show equipped items <span id="equippedCount">0</span></label>
+          <label class="market-check toggle-check" id="equippedOnlyControl" hidden><input id="equippedOnly" type="checkbox"><span class="toggle-track" aria-hidden="true"></span> Equipped only</label>
           <span class="inline-label">Price sort:</span><span class="compact-segment" aria-label="Inventory price sorting basis"><button class="active" type="button" data-stash-sort-mode="total">Total</button><button type="button" data-stash-sort-mode="unit">Unit</button></span><span class="estimate-tabs unit-sort-tabs" id="unitSortTabs" aria-label="Unit price sorting metric" hidden><button type="button" data-unit-sort="buy">Buy</button><button type="button" data-unit-sort="latest">Latest</button><button class="active" type="button" data-unit-sort="sell">Sell</button></span>
         </div>
       </div>
