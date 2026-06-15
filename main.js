@@ -397,6 +397,7 @@ app.whenReady().then(() => {
     return net.fetch('file:///' + path.join(__dirname, urlPath).replace(/\\/g, '/'));
   });
   // IPC handlers setup
+  ipcMain.handle('api:version', () => app.getVersion());
   ipcMain.handle('api:items', async (event, query) => {
     return await apiItems(query);
   });

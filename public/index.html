@@ -407,7 +407,10 @@
     <button id="openDonateModalBtn" type="button">Buy the Dev a Coffee ☕</button>
   </div>
 </main>
-<footer>Developed by Ge Alves - Follow on <a href="https://www.instagram.com/omwgeorge/" target="_blank" rel="noopener">Instagram</a></footer>
+<footer>
+  <div id="appVersionDisplay" style="margin-bottom: 6px; color: #4a5158; font-family: Consolas, monospace; letter-spacing: 0.05em;"></div>
+  Developed by Ge Alves - Follow on <a href="https://www.instagram.com/omwgeorge/" target="_blank" rel="noopener">Instagram</a>
+</footer>
 
 <div id="donateModal" class="modal-overlay" hidden>
   <div class="modal-content">
@@ -1128,6 +1131,10 @@ function applyInitialStateToUI() {
 }
 
 applyInitialStateToUI();loadExchangeRates().finally(load);
+
+if (window.api && window.api.getVersion) {
+  window.api.getVersion().then(v => { $('appVersionDisplay').textContent = `v${v}`; }).catch(()=>{});
+}
 
 // Auto-Updater UI Logic
 if (window.api && window.api.onUpdateAvailable) {
