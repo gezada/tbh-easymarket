@@ -1031,7 +1031,7 @@ $('marketLevelMin').addEventListener('input',()=>updateMarketLevelRange('min'));
 $('marketLevelMax').addEventListener('input',()=>updateMarketLevelRange('max'));
 $('marketPageSize').addEventListener('change',event=>{marketPageSize=Number(event.target.value);marketPage=1;renderMarket()});
 $('marketClear').addEventListener('click',()=>{
-  marketKind='all';marketTypes.clear();marketRarities.clear();marketCharacters.clear();marketPage=1;
+  marketKind='all';marketTypes.clear();marketRarities.clear();marketCharacters.clear();marketPage=1;sortKey='price';sortDir=-1;
   document.querySelectorAll('[data-market-kind]').forEach(button=>button.classList.toggle('active',button.dataset.marketKind==='all'));
   resetMarketLevelRange(false);populateMarketOptions();renderMarket();
 });
