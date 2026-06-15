@@ -1,6 +1,6 @@
 {
   "name": "tbh-easy-market",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "TBH Easy Market: valor do baú e preços do Mercado Steam do TBH: Task Bar Hero. 100% read-only.",
   "type": "module",
   "main": "main.js",
@@ -46,10 +46,9 @@
     "taskbar-hero",
     "tbh",
     "inventory",
-    "price",
-    "eusouogiba"
+    "price"
   ],
-  "author": "EuSouOGiba (https://eusouogiba.com)",
+  "author": "Ge Alves (https://x.com/omwgeorge)",
   "license": "MIT",
   "homepage": "https://github.com/lezards/giba-steam-market",
   "engines": {

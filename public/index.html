@@ -260,15 +260,21 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   
   #updateBanner {
-    display: none;
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px;
     background: #e74c3c;
     color: #fff;
     text-align: center;
-    padding: 8px 16px;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0.5, 1), padding 0.4s ease, background 0.2s;
+  }
+  #updateBanner.show {
+    max-height: 60px;
+    padding: 8px 16px;
   }
   #updateBanner:hover {
     background: #c0392b;
@@ -430,14 +436,31 @@ const $=id=>document.getElementById(id);
 const currencyFormats=new Map();
 const currencyNames=new Intl.DisplayNames(['en'],{type:'currency'});
 let all=[],stashData=null,stashMessage='Loading the TBH save...',stashRequestId=0;
-let sortKey='price',sortDir=-1,cooldown=0,brlRate=0,marketFollowupTimer=0;
+function readFilterState() {
+  try { return JSON.parse(localStorage.getItem('tbh_filters_v1') || '{}'); } catch { return {}; }
+}
+function saveFilterState() {
+  const state = {
+    // STEAM MARKET
+    sortKey, sortDir, marketPageSize, marketKind, marketLevelMin, marketLevelMax,
+    marketTypes: [...marketTypes], marketRarities: [...marketRarities], marketCharacters: [...marketCharacters],
+    // MY STASH
+    stashSortKey, stashSortDir, stashSortMode, stashFilter, levelMin, levelMax,
+    showEquipped, equippedOnly, marketableOnly,
+    stashTypes: [...stashTypes], stashRarities: [...stashRarities], stashCharacters: [...stashCharacters]
+  };
+  try { localStorage.setItem('tbh_filters_v1', JSON.stringify(state)); } catch {}
+}
+const sf = readFilterState();
+
+let sortKey=sf.sortKey||'price',sortDir=sf.sortDir??-1,cooldown=0,brlRate=0,marketFollowupTimer=0;
 let exchangeRates={USD:1};
 let currency=readCurrencyPreference();
 let stashEstimate='sell';
-let stashSortKey='sell',stashSortDir=-1,stashSortMode='total';
-let stashFilter='all',stashTypes=new Set(),stashRarities=new Set(),stashCharacters=new Set(),levelMin=0,levelMax=100,showEquipped=false,equippedOnly=false,marketableOnly=true;
-let marketKind='all',marketTypes=new Set(),marketRarities=new Set(),marketCharacters=new Set(),marketLevelMin=0,marketLevelMax=100;
-let marketPage=1,marketPageSize=10,marketPages=1;
+let stashSortKey=sf.stashSortKey||'sell',stashSortDir=sf.stashSortDir??-1,stashSortMode=sf.stashSortMode||'total';
+let stashFilter=sf.stashFilter||'all',stashTypes=new Set(sf.stashTypes||[]),stashRarities=new Set(sf.stashRarities||[]),stashCharacters=new Set(sf.stashCharacters||[]),levelMin=sf.levelMin??0,levelMax=sf.levelMax??100,showEquipped=sf.showEquipped??false,equippedOnly=sf.equippedOnly??false,marketableOnly=sf.marketableOnly??true;
+let marketKind=sf.marketKind||'all',marketTypes=new Set(sf.marketTypes||[]),marketRarities=new Set(sf.marketRarities||[]),marketCharacters=new Set(sf.marketCharacters||[]),marketLevelMin=sf.marketLevelMin??0,marketLevelMax=sf.marketLevelMax??100;
+let marketPage=1,marketPageSize=sf.marketPageSize??10,marketPages=1;
 let marketSortPreparing=false;
 let searchWasEmpty=!$('search').value.length;
 let excludedStashItems=readExcludedStashItems();
@@ -514,7 +537,7 @@ async function loadExchangeRates(){
 function priceColumn(item,metric,qty=1,tag='div',showUnit=false){
   const detail=marketDetails.get(item.hash);
   const marketTable=tag==='td';
-  let primary='...',secondary='',date='';
+  let primary='loading...',secondary='',date='';
   if(metric==='sell'){
     primary=formatMoney(item.priceCents*qty,currency);
     secondary=marketTable?'':showUnit?`${formatMoney(item.priceCents,currency)} each`:formatMoney(item.priceCents*qty,otherCurrency());
@@ -664,6 +687,7 @@ function updateStashSortHead(){
 }
 
 function renderStash(){
+  saveFilterState();
   $('stash').hidden=false;
   if(!stashData){
     $('stashBody').innerHTML=`<div class="empty"><span class="spin"></span>${escapeHtml(stashMessage)}</div>`;
@@ -808,6 +832,7 @@ function updateMarketSortHead(){
 }
 
 function renderMarket(){
+  saveFilterState();
   const list=filteredMarket().sort((a,b)=>{
     if(sortKey==='name')return sortDir*a.name.localeCompare(b.name);
     const av=marketSortValue(a,sortKey),bv=marketSortValue(b,sortKey);
@@ -1083,7 +1108,26 @@ setupMultiSelect('marketCharacter',marketCharacters,()=>{marketPage=1;populateMa
 setInterval(refreshStashSilently,30000);
 setInterval(()=>load(true,true),5*60*1000);
 
-updateLevelRange();loadExchangeRates().finally(load);
+function applyInitialStateToUI() {
+  document.querySelectorAll('[data-estimate]').forEach(b=>b.classList.toggle('active',b.dataset.estimate===stashEstimate));
+  document.querySelectorAll('[data-stash-sort-mode]').forEach(b=>b.classList.toggle('active',b.dataset.stashSortMode===stashSortMode));
+  document.querySelectorAll('[data-unit-sort]').forEach(b=>b.classList.toggle('active',b.dataset.unitSort===stashSortKey));
+  $('unitSortTabs').hidden=stashSortMode!=='unit';
+  document.querySelectorAll('[data-stash-filter]').forEach(b=>b.classList.toggle('active',b.dataset.stashFilter===stashFilter));
+  $('showEquipped').checked=showEquipped;
+  $('equippedOnly').checked=equippedOnly;
+  $('marketableOnly').checked=marketableOnly;
+  $('levelMin').value=validLevels.indexOf(levelMin);
+  $('levelMax').value=validLevels.indexOf(levelMax);
+  document.querySelectorAll('[data-market-kind]').forEach(b=>b.classList.toggle('active',b.dataset.marketKind===marketKind));
+  $('marketPageSize').value=marketPageSize;
+  $('marketLevelMin').value=validLevels.indexOf(marketLevelMin);
+  $('marketLevelMax').value=validLevels.indexOf(marketLevelMax);
+  updateLevelRange();
+  updateMarketLevelRange();
+}
+
+applyInitialStateToUI();loadExchangeRates().finally(load);
 
 // Auto-Updater UI Logic
 if (window.api && window.api.onUpdateAvailable) {
@@ -1091,7 +1135,7 @@ if (window.api && window.api.onUpdateAvailable) {
   let updateState = 'idle'; // idle | available | downloading | ready | portable
   
   window.api.onUpdateAvailable((info) => {
-    banner.style.display = 'block';
+    banner.classList.add('show');
     if (info.isPortable) {
       updateState = 'portable';
       banner.textContent = `A new version of TBH Easy Market is available! [Click here to download the new Portable version]`;
