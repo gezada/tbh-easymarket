@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SAVE_DIR = path.join(os.homedir(), 'AppData/LocalLow/TesseractStudio/TaskbarHero');
-const SAVE_FILE = path.join(SAVE_DIR, 'SaveFile_Live.es3');
+export const SAVE_FILE = path.join(SAVE_DIR, 'SaveFile_Live.es3');
 const SAVE_NAMES_DIR = path.join(ROOT, 'data');
 // Senha de descriptografia do save (Easy Save 3). NÃO é segredo do usuário — é uma chave do JOGO,
 // guardada em texto plano dentro dos assets do TBH. A gente extrai sozinho (à prova de updates).

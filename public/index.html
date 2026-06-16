@@ -482,15 +482,27 @@ let marketSortPreparing=false;
 let searchWasEmpty=!$('search').value.length;
 let excludedStashItems=readExcludedStashItems();
 const marketDetails=new Map(),detailPending=new Set();
+let isSlowLoading=false,loadingTimeout=null;
 function updateStashTitle(){
   const title=$('stashBarTitle');
   if(!title)return;
   if(detailPending.size>0){
-    title.textContent='Fetching Steam prices...';
-    title.classList.add('loading-pulse');
+    if(!loadingTimeout){
+      loadingTimeout=setTimeout(()=>{
+        isSlowLoading=true;
+        title.textContent='Fetching Steam prices...';
+        title.classList.add('loading-pulse');
+        renderStash();
+      }, 1000);
+    }
   }else{
+    if(loadingTimeout) clearTimeout(loadingTimeout);
+    loadingTimeout=null;
+    const wasSlow=isSlowLoading;
+    isSlowLoading=false;
     title.textContent='My Stash';
     title.classList.remove('loading-pulse');
+    if(wasSlow) renderStash();
   }
 }
 const validLevels=[0,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,100];
@@ -565,7 +577,7 @@ async function loadExchangeRates(){
 function priceColumn(item,metric,qty=1,tag='div',showUnit=false){
   const detail=marketDetails.get(item.hash);
   const marketTable=tag==='td';
-  let primary='loading...',secondary='',date='';
+  let primary=isSlowLoading?'loading...':'',secondary='',date='';
   if(metric==='sell'){
     primary=formatMoney(item.priceCents*qty,currency);
     secondary=marketTable?'':showUnit?`${formatMoney(item.priceCents,currency)} each`:formatMoney(item.priceCents*qty,otherCurrency());
@@ -743,8 +755,8 @@ function renderStash(){
   $('unlistedCount').textContent=stashData.unpricedItems?`(${stashData.unpricedItems})`:'';
   $('equippedCount').textContent=`(${stashData.equippedCount||0})`;
   const totals={
-    buy:{label:'Buy estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(buyBrlCents)}</span>`:'<span class="money-main">Loading...</span>',short:detailsComplete?formatBrlMoney(buyBrlCents):'loading...'},
-    latest:{label:'Latest estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(latestBrlCents)}</span>`:'<span class="money-main">Loading...</span>',short:detailsComplete?formatBrlMoney(latestBrlCents):'loading...'},
+    buy:{label:'Buy estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(buyBrlCents)}</span>`:`<span class="money-main">${isSlowLoading?'Loading...':''}</span>`,short:detailsComplete?formatBrlMoney(buyBrlCents):isSlowLoading?'loading...':''},
+    latest:{label:'Latest estimate',markup:detailsComplete?`<span class="money-main">${formatBrlMoney(latestBrlCents)}</span>`:`<span class="money-main">${isSlowLoading?'Loading...':''}</span>`,short:detailsComplete?formatBrlMoney(latestBrlCents):isSlowLoading?'loading...':''},
     sell:{label:'Sell estimate',markup:`<span class="money-main">${formatMoney(visibleCents,currency)}</span>`,short:formatMoney(visibleCents,currency)},
   };
   $('totalLabel').textContent=totals[stashEstimate].label;
@@ -1184,6 +1196,15 @@ applyInitialStateToUI();loadExchangeRates().finally(load);
 
 if (window.api && window.api.getVersion) {
   window.api.getVersion().then(v => { $('appVersionDisplay').textContent = `v${v}`; }).catch(()=>{});
+}
+
+// IPC Listeners
+if (window.api && window.api.onSaveFileChanged) {
+  window.api.onSaveFileChanged(() => {
+    if (!$('stash').hidden) {
+      load(false, true); // force=false, silent=true
+    }
+  });
 }
 
 // Auto-Updater UI Logic

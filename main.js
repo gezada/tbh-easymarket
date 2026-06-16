@@ -467,6 +467,20 @@ app.whenReady().then(() => {
 
   createWindow();
 
+  let watchTimer = null;
+  if (tbhSave.SAVE_FILE && fs.existsSync(tbhSave.SAVE_FILE)) {
+    fs.watch(tbhSave.SAVE_FILE, (eventType) => {
+      if (eventType === 'change') {
+        clearTimeout(watchTimer);
+        watchTimer = setTimeout(() => {
+          if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('save-file-changed');
+          }
+        }, 500);
+      }
+    });
+  }
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();

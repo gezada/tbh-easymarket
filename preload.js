@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('api', {
   onUpdateAvailable: (callback) => ipcRenderer.on('updater:update-available', (_, info) => callback(info)),
   onUpdateProgress: (callback) => ipcRenderer.on('updater:download-progress', (_, percent) => callback(percent)),
   onUpdateDownloaded: (callback) => ipcRenderer.on('updater:update-downloaded', () => callback()),
+  onSaveFileChanged: (callback) => ipcRenderer.on('save-file-changed', () => callback()),
   startUpdateDownload: () => ipcRenderer.invoke('updater:start-download'),
   installUpdate: () => ipcRenderer.invoke('updater:install-update')
 });
