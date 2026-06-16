@@ -86,6 +86,8 @@
   .total-label{display:block;color:#97918a;font:700 9px Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
   .money-main{display:block;color:var(--gold-light);font:800 24px/1.15 Georgia,serif;text-shadow:2px 2px #000}
   .money-sub{display:block;color:#9ba1a6;font:11px Consolas,monospace;margin-top:2px}
+  @keyframes pulseOpacity{0%{opacity:1;}50%{opacity:0.3;}100%{opacity:1;}}
+  .loading-pulse{animation:pulseOpacity 1.5s ease-in-out infinite;color:var(--gold-light);}
   .estimate-tabs{display:flex;justify-content:flex-end;gap:3px;margin-bottom:5px}
   .estimate-tabs button{padding:3px 7px;color:#7f878d;background:#111416;border:1px solid #363d42;font:700 8px Consolas,monospace;letter-spacing:.06em}
   .estimate-tabs button:hover{color:#f1d28a;border-color:#8c5a22}.estimate-tabs button.active{color:#211605;background:var(--gold);border-color:#e3a429}
@@ -311,7 +313,7 @@
 </header>
 <main>
   <section id="stash" hidden>
-    <div class="section-bar" id="stashBar">My Stash<span id="stashToggle" aria-hidden="true"></span></div>
+    <div class="section-bar" id="stashBar"><span id="stashBarTitle">My Stash</span><span id="stashToggle" aria-hidden="true"></span></div>
     <div id="stashHead" role="button" tabindex="0" aria-expanded="false">
       <h2>Inventory</h2><span class="readonly">Read only</span>
       <span class="meta" id="stashCount"></span>
@@ -480,6 +482,17 @@ let marketSortPreparing=false;
 let searchWasEmpty=!$('search').value.length;
 let excludedStashItems=readExcludedStashItems();
 const marketDetails=new Map(),detailPending=new Set();
+function updateStashTitle(){
+  const title=$('stashBarTitle');
+  if(!title)return;
+  if(detailPending.size>0){
+    title.textContent='Fetching Steam prices...';
+    title.classList.add('loading-pulse');
+  }else{
+    title.textContent='My Stash';
+    title.classList.remove('loading-pulse');
+  }
+}
 const validLevels=[0,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,100];
 const gradeOrder=['COMMON','UNCOMMON','RARE','LEGENDARY','IMMORTAL','ARCANA','BEYOND','CELESTIAL','DIVINE','COSMIC'];
 const rarityColors={COMMON:'D7D7D7',UNCOMMON:'7CE937',RARE:'519FFF',LEGENDARY:'EBBB00',IMMORTAL:'E8695A',ARCANA:'FB86FF',BEYOND:'FF0080',CELESTIAL:'00F6FF',DIVINE:'F6E7A2',COSMIC:'FC00FF'};
@@ -576,11 +589,14 @@ async function loadMarketDetails(items){
   const names=[...new Set(items.filter(item=>item?.hash&&item.marketable!==false&&!marketDetails.has(item.hash)&&!detailPending.has(item.hash)).map(item=>item.hash))].slice(0,30);
   if(!names.length)return;
   names.forEach(name=>detailPending.add(name));
+  updateStashTitle();
   try{
     const data=await window.api.getMarketDetails({names});
     for(const detail of data.details||[])if(!detail.error)marketDetails.set(detail.name,detail);
   }catch{}finally{
-    names.forEach(name=>detailPending.delete(name));renderStash();renderMarket();
+    names.forEach(name=>detailPending.delete(name));
+    updateStashTitle();
+    renderStash();renderMarket();
   }
 }
 
@@ -743,7 +759,7 @@ function renderStash(){
     const visibilityKey=stashItemKey(item);
     const excluded=excludedStashItems.has(visibilityKey);
     const level=item.kind==='gear'&&!/Lv\.?\s*\d+/i.test(item.type)?` · Lv. ${itemLevel(item)}`:'';
-    const marketNote=item.marketable?'no active Steam Market listing':'not marketable on the Steam Market';
+    const marketNote=item.marketable?'<span style="color:var(--gold-light)">No active Steam Market listing</span>':'not marketable on the Steam Market';
     const prices=unlisted
       ? (item.marketable!==false?`${priceColumn(item,'buy',item.qty,'div',true)}${priceColumn(item,'latest',item.qty,'div',true)}${unavailablePriceColumn('sell')}`:unavailablePriceColumns())
       : ['buy','latest','sell'].map(metric=>priceColumn(item,metric,item.qty,'div',true)).join('');
