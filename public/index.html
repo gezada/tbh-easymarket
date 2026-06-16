@@ -222,11 +222,14 @@
     .market-price{font-size:8px}.market-price.sell .price-value{font-size:10px}
   }
   .in-app-donate {
-    margin-top: 30px; padding: 20px; background: var(--panel2);
-    border: 1px solid var(--line); box-shadow: inset 3px 3px 0 rgba(0,0,0,.35);
-    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;
+    margin-top: 40px; padding: 24px 20px;
+    background: linear-gradient(180deg, rgba(156,75,12,0.25), rgba(86,35,7,0.25));
+    border: 1px solid #8b5319;
+    box-shadow: inset 0 0 0 2px #d58b1e, inset 0 0 0 4px #532107, 4px 4px 0 #080909;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
   }
-  .in-app-donate p { color: var(--text); font-size: 13px; }
+  .in-app-donate p.donate-top-text { color: #fff3c8; font: 800 24px/1.05 Georgia,serif; text-shadow: 2px 2px #4b1900; margin: 0; }
+  .in-app-donate p.donate-sub-text { color: var(--gold-light); font: 800 11px/1 Consolas,monospace; text-shadow: 2px 2px #000; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 8px 0; }
   .in-app-donate button {
     padding: 8px 16px; font: 800 12px Consolas, monospace; background: linear-gradient(#f2bc43, #bd7818);
     color: #211605; border: 1px solid #e3a429; box-shadow: inset 0 -2px #80500f, 3px 3px 0 rgba(0,0,0,.35);
@@ -410,14 +413,13 @@
   </section>
 
   <div class="in-app-donate">
-    <p>Love the Project? Easy Market is 100% free and made by fans for fans.</p>
+    <p class="donate-top-text">Love the project?</p>
+    <p class="donate-sub-text">Easy Market is 100% free and made by fans for fans</p>
     <button id="openDonateModalBtn" type="button">Buy the Dev a Coffee ☕</button>
-  </div>
-  <div style="text-align: center; padding-bottom: 15px;">
-    <div id="appVersionDisplay" style="color: #4a5158; font-family: Consolas, monospace; letter-spacing: 0.05em; font-size: 11px;"></div>
   </div>
 </main>
 <footer>
+  <div id="appVersionDisplay" style="color: #4a5158; font-family: Consolas, monospace; letter-spacing: 0.05em; font-size: 11px; margin-bottom: 6px;"></div>
   Developed by Ge Alves - Follow on <a href="https://x.com/omwgeorge" target="_blank" rel="noopener">Twitter</a> and/or <a href="https://www.instagram.com/omwgeorge/" target="_blank" rel="noopener">Instagram</a>
 </footer>
 
