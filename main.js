@@ -462,7 +462,7 @@ app.whenReady().then(() => {
     autoUpdater.downloadUpdate().catch(e => log(`Download error: ${e.message}`));
   });
   ipcMain.handle('updater:install-update', () => {
-    autoUpdater.quitAndInstall();
+    autoUpdater.quitAndInstall(true, true);
   });
 
   createWindow();

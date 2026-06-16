@@ -1063,7 +1063,7 @@ function toggleStash(){setStashOpen($('stashContent').style.display==='none')}
 $('stashBar').addEventListener('click',event=>{if(!event.target.closest('button,a'))toggleStash()});
 $('stashHead').addEventListener('click',event=>{if(!event.target.closest('button,a'))toggleStash()});
 $('stashHead').addEventListener('keydown',event=>{
-  if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleStash()}
+  if(event.key==='Enter'){event.preventDefault();toggleStash()}
 });
 function handleSearchInput(){
   const empty=!$('search').value.length;
