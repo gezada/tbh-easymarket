@@ -39,8 +39,8 @@
   .brand-icon img{display:block;width:100%;height:100%;object-fit:cover}
   .brand-name{padding:0 14px 0 10px;color:#fff3c8;font:800 18px/1.05 Georgia,serif;text-align:left;text-shadow:2px 2px #4b1900}
   .brand-name em{display:block;color:var(--gold-light);font:700 9px/1.4 Consolas,monospace;letter-spacing:.11em;text-transform:uppercase}
-  #search{flex:1;min-width:210px;height:42px;padding:0 14px;color:#ddd;background:#0d1012;border:1px solid #3d454c;
-    border-radius:0;outline:none;box-shadow:inset 3px 3px 0 rgba(0,0,0,.35)}
+  #search{flex:1;min-width:150px;height:42px;padding:0 14px;color:#ddd;background:#0d1012;border:1px solid #3d454c;
+    border-radius:2px;font:700 13px Consolas,monospace;transition:all .15s ease;box-shadow:inset 3px 3px 0 rgba(0,0,0,.35)}
   #search:focus{border-color:var(--gold);box-shadow:inset 3px 3px 0 rgba(0,0,0,.35),0 0 0 1px #6a4215}
   #search::placeholder{color:#687078}
   #search::-webkit-search-cancel-button, #stashSearch::-webkit-search-cancel-button{cursor:pointer}
@@ -82,7 +82,7 @@
   .stash-local-search input[type="search"]{width:100%;background:#111;border:1px solid #3c3f41;color:#e0e0e0;padding:6px 10px;font-size:13px;outline:none;border-radius:2px;transition:all 0.2s}
   .stash-local-search input[type="search"]:focus{border-color:var(--gold-light)}
   .stash-search-active .stash-controls, .stash-search-active .stash-summary-options{opacity:0.3;pointer-events:none;filter:grayscale(100%);transition:all 0.2s}
-  .total-box{text-align:right;min-width:310px}
+  .total-box{text-align:right;min-width:310px;white-space:nowrap}
   .total-label{display:block;color:#97918a;font:700 9px Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
   .money-main{display:block;color:var(--gold-light);font:800 24px/1.15 Georgia,serif;text-shadow:2px 2px #000}
   .money-sub{display:block;color:#9ba1a6;font:11px Consolas,monospace;margin-top:2px}
@@ -136,7 +136,7 @@
   .unlisted-icon{display:grid;place-items:center;width:40px;height:40px;color:#777f85;background:#111416;border:1px dashed #444b50;font:800 15px Consolas,monospace}
   .sn{min-width:0}.sn-title{display:flex;align-items:center;gap:7px;min-width:0}.sn-title b{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.sn small{color:#80888e;font-size:11px}
   .sn-link{text-decoration:none;color:inherit;cursor:pointer;display:block;min-width:0;overflow:hidden}
-  .sn-link:hover b{text-decoration:underline;text-decoration-color:currentColor}
+  .sn-link:hover b{text-decoration:underline;text-decoration-color:currentColor;color:inherit!important}
   .equipped-tag{flex:0 0 auto;padding:2px 5px;color:#211605;background:#e4a928;border:1px solid #ffd45d;font:800 7px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 -1px #9b6413}
   .qty{min-width:40px;text-align:right;color:#b2b7bb;font:700 11px Consolas,monospace}
   .stash-price-head{display:grid;grid-template-columns:24px 40px minmax(160px,1fr) 40px repeat(3,minmax(92px,110px)) 24px;gap:11px;padding:8px 18px;color:#c88d2c;background:#121517;border-bottom:1px solid #4a3b2b;font:800 10px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
@@ -217,10 +217,15 @@
     main{padding:14px 8px 28px}.topbar{padding:6px 8px}
     .brand-icon{width:40px;height:40px}.brand-name{padding:0 10px}.currency-switch button{min-width:42px;padding:6px}
     #refresh{padding:0 10px}.section-bar{padding-left:46px;padding-right:46px}
-    #stashHead{align-items:flex-start;flex-wrap:wrap;padding:12px}.total-box{width:100%;text-align:left}.estimate-tabs,.estimate-secondary{justify-content:flex-start}.stash-controls{padding:10px}
-    .market-controls{padding:10px}.market-filter-row{align-items:stretch}.market-field{flex:1 1 45%;display:grid;gap:4px}.market-field select,.market-field .multi-select{width:100%}.filter-line .market-field{flex:1 1 45%;display:grid;gap:4px}.filter-line .market-field select,.filter-line .market-field .multi-select{width:100%}.stash-clear{margin-left:0;width:100%}.stash-summary-options{width:100%}
-    .topbar{flex-wrap:wrap}.brand-name{font-size:16px}#search{order:3;flex-basis:100%}.head-actions{margin-left:auto}
-    .total-box{min-width:270px}.money-main{font-size:20px}
+    #stashHead{align-items:flex-start;flex-wrap:wrap;padding:12px}
+    .stash-controls{padding:10px}
+    .market-controls{padding:10px}
+    .topbar{flex-wrap:wrap}.brand-name{font-size:16px}.head-actions{margin-left:auto}
+    .money-main{font-size:20px}
+  }
+  @media(max-width:850px){
+    #search{order:3;flex-basis:100%;margin-top:8px}
+    .stash-local-search{order:3;flex-basis:100%;max-width:none;margin-top:8px}
   }
   @media(max-width:775px){
     body{width:100%;zoom:1}header::before,footer::before{width:100vw}
@@ -387,9 +392,11 @@
         <button class="filter-btn active" type="button" data-market-kind="all">All</button>
         <button class="filter-btn" type="button" data-market-kind="gear">Equipment</button>
         <button class="filter-btn" type="button" data-market-kind="material">Materials</button>
-        <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="marketTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
-        <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="marketRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
-        <span class="market-field" id="marketCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="marketCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+        <div class="filter-group">
+          <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="marketTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="marketRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <span class="market-field" id="marketCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="marketCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="marketCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="marketCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+        </div>
         <button id="marketClear" type="button">Clear</button>
       </div>
       <div id="marketLevelFilter" hidden>
