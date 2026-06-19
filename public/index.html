@@ -82,7 +82,7 @@
   .stash-local-search input[type="search"]{width:100%;background:#111;border:1px solid #3c3f41;color:#e0e0e0;padding:6px 10px;font-size:13px;outline:none;border-radius:2px;transition:all 0.2s}
   .stash-local-search input[type="search"]:focus{border-color:var(--gold-light)}
   .stash-search-active .stash-controls, .stash-search-active .stash-summary-options{opacity:0.3;pointer-events:none;filter:grayscale(100%);transition:all 0.2s}
-  .total-box{text-align:right;min-width:310px;white-space:nowrap}
+  .total-box{text-align:right;margin-left:auto;white-space:nowrap}
   .total-label{display:block;color:#97918a;font:700 9px Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
   .money-main{display:block;color:var(--gold-light);font:800 24px/1.15 Georgia,serif;text-shadow:2px 2px #000}
   .money-sub{display:block;color:#9ba1a6;font:11px Consolas,monospace;margin-top:2px}
@@ -210,8 +210,13 @@
   footer::before{content:"";position:absolute;top:0;left:0;right:0;border-top:1px solid #3a4148}
   footer a{color:var(--gold);text-decoration:none}footer a:hover{color:var(--gold-light);text-decoration:underline}
   ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#0d1012}::-webkit-scrollbar-thumb{background:#5b3331;border:2px solid #0d1012}
+  .stash-title-col{display:flex;flex-direction:column;gap:2px}
+  .stash-title-row{display:flex;align-items:center;gap:8px}
   @media(max-width:1200px){
-    #stashHead .readonly{display:none}
+    .stash-title-row{display:contents}
+    .readonly{order:3;align-self:flex-start;margin-top:2px;margin-left:0}
+    #stashCount{order:2}
+    #stashHead h2{order:1;margin:0}
   }
   @media(max-width:1025px){
     main{padding:14px 8px 28px}.topbar{padding:6px 8px}
@@ -226,6 +231,18 @@
   @media(max-width:850px){
     #search{order:3;flex-basis:100%;margin-top:8px}
     .stash-local-search{order:3;flex-basis:100%;max-width:none;margin-top:8px}
+    .filter-line::after,.market-filter-row::after{content:"";display:block;flex-basis:100%;order:4}
+    .filter-label{order:1}
+    .filter-btn[data-stash-filter="all"],.filter-btn[data-market-kind="all"]{order:1;flex:1 1 0%}
+    .filter-btn[data-stash-filter="gear"],.filter-btn[data-market-kind="gear"]{order:2;flex:1 1 0%}
+    .filter-btn[data-stash-filter="material"],.filter-btn[data-market-kind="material"]{order:3;flex:1 1 0%}
+    .filter-group{order:5;flex:1 1 0%}
+    .filter-group .market-field{flex:1 1 0%}
+    .filter-group .market-field select,.filter-group .market-field .multi-select{width:100%}
+    .stash-clear,#marketClear{order:6;flex:0 0 auto;margin-left:0}
+    .stash-summary-options{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .stash-summary-options::-webkit-scrollbar{display:none}
+    .price-sort-group .inline-label{display:none}
   }
   @media(max-width:775px){
     body{width:100%;zoom:1}header::before,footer::before{width:100vw}
@@ -327,8 +344,8 @@
   <section id="stash" hidden>
     <div class="section-bar" id="stashBar"><span id="stashBarTitle">My Stash</span><span id="stashToggle" aria-hidden="true"></span></div>
     <div id="stashHead" role="button" tabindex="0" aria-expanded="false">
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="display:flex;align-items:center;gap:8px"><h2>Inventory</h2><span class="readonly">Read only</span></div>
+      <div class="stash-title-col">
+        <div class="stash-title-row"><h2>Inventory</h2><span class="readonly">Read only</span></div>
         <span class="meta" id="stashCount"></span>
       </div>
       <div class="stash-local-search">
