@@ -78,8 +78,8 @@
   .readonly{padding:3px 7px;color:var(--gold);border:1px solid #654a22;background:#18140e;font:700 9px Consolas,monospace;text-transform:uppercase}
   .meta{color:var(--muted);font-size:11px}
   #stashCount{margin-right:15px}
-  .stash-local-search{margin-right:auto;display:flex;align-items:center}
-  .stash-local-search input[type="search"]{width:400px;background:#111;border:1px solid #3c3f41;color:#e0e0e0;padding:6px 10px;font-size:13px;outline:none;border-radius:2px;transition:all 0.2s}
+  .stash-local-search{margin-right:auto;display:flex;align-items:center;flex:1 1 auto;min-width:150px;max-width:400px}
+  .stash-local-search input[type="search"]{width:100%;background:#111;border:1px solid #3c3f41;color:#e0e0e0;padding:6px 10px;font-size:13px;outline:none;border-radius:2px;transition:all 0.2s}
   .stash-local-search input[type="search"]:focus{border-color:var(--gold-light)}
   .stash-search-active .stash-controls, .stash-search-active .stash-summary-options{opacity:0.3;pointer-events:none;filter:grayscale(100%);transition:all 0.2s}
   .total-box{text-align:right;min-width:310px}
@@ -97,6 +97,7 @@
   .estimate-secondary b{margin-left:3px;color:#aeb5ba;font-size:9px;text-transform:none}
   .stash-controls{padding:13px 18px;background:#15191c;border-bottom:1px solid var(--line);display:grid;gap:11px}
   .filter-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .filter-group{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
   .stash-clear{margin-left:auto}
   .filter-label{min-width:56px;color:var(--orange);font:800 10px Consolas,monospace;text-transform:uppercase;letter-spacing:.08em}
   .filter-btn{padding:6px 12px;border:1px solid #424a51;background:#20252a;color:#a9afb4;font:700 10px Consolas,monospace;text-transform:uppercase}
@@ -113,6 +114,7 @@
   .dual-range input::-moz-range-thumb{width:11px;height:16px;pointer-events:auto;background:#e1aa36;border:2px solid #24180a;border-radius:0;cursor:ew-resize}
   .stash-summary{display:flex;align-items:center;gap:8px;min-height:50px;box-sizing:border-box;flex-wrap:wrap;padding:9px 18px;color:#888f95;background:#111416;border-bottom:1px solid var(--line-soft);font:10px Consolas,monospace}
   .stash-summary-options{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .price-sort-group{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
   .inline-label{color:var(--orange);font:800 9px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
   .compact-segment{display:flex;gap:3px}.compact-segment button{height:27px;padding:0 9px;border:1px solid #424a51;background:#20252a;color:#a9afb4;font:700 9px Consolas,monospace;text-transform:uppercase}
   .compact-segment button:hover{border-color:#8c5a22;color:#f5d88e}.compact-segment button.active{color:#211605;border-color:#e3a429;background:linear-gradient(#f2bc43,#bd7818);box-shadow:inset 0 -2px #80500f}
@@ -132,7 +134,9 @@
   .srow.excluded .stash-icon img{opacity:.45;filter:saturate(.45)}
   .srow.excluded .price-cell .price-value,.srow.excluded .price-cell .price-sub{text-decoration:line-through;text-decoration-thickness:1px;opacity:.58}
   .unlisted-icon{display:grid;place-items:center;width:40px;height:40px;color:#777f85;background:#111416;border:1px dashed #444b50;font:800 15px Consolas,monospace}
-  .sn{min-width:0}.sn-title{display:flex;align-items:center;gap:7px;min-width:0}.sn-title b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.sn small{color:#80888e;font-size:11px}
+  .sn{min-width:0}.sn-title{display:flex;align-items:center;gap:7px;min-width:0}.sn-title b{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.sn small{color:#80888e;font-size:11px}
+  .sn-link{text-decoration:none;color:inherit;cursor:pointer;display:block;min-width:0;overflow:hidden}
+  .sn-link:hover b{text-decoration:underline;text-decoration-color:currentColor}
   .equipped-tag{flex:0 0 auto;padding:2px 5px;color:#211605;background:#e4a928;border:1px solid #ffd45d;font:800 7px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 -1px #9b6413}
   .qty{min-width:40px;text-align:right;color:#b2b7bb;font:700 11px Consolas,monospace}
   .stash-price-head{display:grid;grid-template-columns:24px 40px minmax(160px,1fr) 40px repeat(3,minmax(92px,110px)) 24px;gap:11px;padding:8px 18px;color:#c88d2c;background:#121517;border-bottom:1px solid #4a3b2b;font:800 10px Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
@@ -206,20 +210,23 @@
   footer::before{content:"";position:absolute;top:0;left:0;right:0;border-top:1px solid #3a4148}
   footer a{color:var(--gold);text-decoration:none}footer a:hover{color:var(--gold-light);text-decoration:underline}
   ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#0d1012}::-webkit-scrollbar-thumb{background:#5b3331;border:2px solid #0d1012}
-  @media(max-width:1025px){
-    .topbar{flex-wrap:wrap}.brand-name{font-size:16px}#search{order:3;flex-basis:100%}.head-actions{margin-left:auto}
-    .total-box{min-width:270px}.money-main{font-size:20px}
+  @media(max-width:1200px){
+    #stashHead .readonly{display:none}
   }
-  @media(max-width:775px){
-    body{width:100%;zoom:1}header::before,footer::before{width:100vw}
+  @media(max-width:1025px){
     main{padding:14px 8px 28px}.topbar{padding:6px 8px}
     .brand-icon{width:40px;height:40px}.brand-name{padding:0 10px}.currency-switch button{min-width:42px;padding:6px}
     #refresh{padding:0 10px}.section-bar{padding-left:46px;padding-right:46px}
     #stashHead{align-items:flex-start;flex-wrap:wrap;padding:12px}.total-box{width:100%;text-align:left}.estimate-tabs,.estimate-secondary{justify-content:flex-start}.stash-controls{padding:10px}
     .market-controls{padding:10px}.market-filter-row{align-items:stretch}.market-field{flex:1 1 45%;display:grid;gap:4px}.market-field select,.market-field .multi-select{width:100%}.filter-line .market-field{flex:1 1 45%;display:grid;gap:4px}.filter-line .market-field select,.filter-line .market-field .multi-select{width:100%}.stash-clear{margin-left:0;width:100%}.stash-summary-options{width:100%}
+    .topbar{flex-wrap:wrap}.brand-name{font-size:16px}#search{order:3;flex-basis:100%}.head-actions{margin-left:auto}
+    .total-box{min-width:270px}.money-main{font-size:20px}
+  }
+  @media(max-width:775px){
+    body{width:100%;zoom:1}header::before,footer::before{width:100vw}
     .market-toolbar{align-items:flex-start;flex-direction:column}
-    .stash-price-head{grid-template-columns:minmax(82px,1fr) repeat(3,62px);gap:5px;padding:7px 8px}.stash-price-head .item-head{grid-column:1}.stash-price-head .qty-head{display:none}.stash-price-head .buy-head{grid-column:2}.stash-price-head .latest-head{grid-column:3}.stash-price-head .sell-head{grid-column:4}
-    .srow{grid-template-columns:minmax(82px,1fr) repeat(3,62px);gap:5px;padding:8px}.kind,.stash-icon,.unlisted-icon,.qty,.srow>.steam-link,.steam-link-space{display:none}.sn{grid-column:1}.sn small{font-size:9px}.price-cell{font-size:8px}.price-cell.sell .price-value{font-size:10px}.price-cell .price-sub,.price-date{display:none}
+    .stash-price-head{grid-template-columns:40px minmax(82px,1fr) 40px repeat(3,62px);gap:5px;padding:7px 8px}.stash-price-head .item-head{grid-column:2}.stash-price-head .qty-head{grid-column:3}.stash-price-head .buy-head{grid-column:4}.stash-price-head .latest-head{grid-column:5}.stash-price-head .sell-head{grid-column:6}
+    .srow{grid-template-columns:40px minmax(82px,1fr) 40px repeat(3,62px);gap:5px;padding:8px}.kind,.unlisted-icon,.srow>.steam-link,.steam-link-space{display:none}.stash-icon{grid-column:1}.sn{grid-column:2}.qty{grid-column:3;font-size:10px}.sn small{font-size:9px}.price-cell{font-size:8px}.price-cell.sell .price-value{font-size:10px}.price-cell .price-sub,.price-date{display:none}
     #tbl thead tr,#tbl tr.item{grid-template-columns:42px minmax(82px,1fr) repeat(3,62px);gap:5px;padding-left:8px;padding-right:8px}.market-kind-cell,.ls,.steam-cell{display:none}.ic{width:34px;height:34px;margin:auto}
     .market-price{font-size:8px}.market-price.sell .price-value{font-size:10px}
   }
@@ -315,8 +322,10 @@
   <section id="stash" hidden>
     <div class="section-bar" id="stashBar"><span id="stashBarTitle">My Stash</span><span id="stashToggle" aria-hidden="true"></span></div>
     <div id="stashHead" role="button" tabindex="0" aria-expanded="false">
-      <h2>Inventory</h2><span class="readonly">Read only</span>
-      <span class="meta" id="stashCount"></span>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;align-items:center;gap:8px"><h2>Inventory</h2><span class="readonly">Read only</span></div>
+        <span class="meta" id="stashCount"></span>
+      </div>
       <div class="stash-local-search">
         <input id="stashSearch" type="search" placeholder="Search inventory..." aria-label="Search your stash">
       </div>
@@ -338,9 +347,11 @@
           <button class="filter-btn active" type="button" data-stash-filter="all">All</button>
           <button class="filter-btn" type="button" data-stash-filter="gear">Equipment</button>
           <button class="filter-btn" type="button" data-stash-filter="material">Materials</button>
-          <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="stashTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
-          <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="stashRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
-          <span class="market-field" id="stashCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="stashCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          <div class="filter-group">
+            <span class="market-field">Type <span class="multi-select"><button class="multi-trigger" id="stashTypeButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashTypeLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashTypeMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+            <span class="market-field">Rarity <span class="multi-select"><button class="multi-trigger" id="stashRarityButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashRarityLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashRarityMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+            <span class="market-field" id="stashCharacterField">Character <span class="multi-select"><button class="multi-trigger" id="stashCharacterButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="stashCharacterLabel">All</span><span class="chevron">▼</span></button><span class="multi-menu" id="stashCharacterMenu" role="listbox" aria-multiselectable="true" hidden></span></span></span>
+          </div>
           <button class="stash-clear" id="stashClear" type="button">Clear</button>
         </div>
         <div id="levelFilter" hidden>
@@ -358,7 +369,9 @@
           <label class="market-check" id="marketableOnlyControl"><input id="marketableOnly" type="checkbox" checked> Marketable only <span id="unlistedCount"></span></label>
           <label class="market-check"><input id="showEquipped" type="checkbox"> Show equipped items <span id="equippedCount">0</span></label>
           <label class="market-check toggle-check" id="equippedOnlyControl" hidden><input id="equippedOnly" type="checkbox"><span class="toggle-track" aria-hidden="true"></span> Equipped only</label>
-          <span class="inline-label">Price sort:</span><span class="compact-segment" aria-label="Inventory price sorting basis"><button class="active" type="button" data-stash-sort-mode="total">Total</button><button type="button" data-stash-sort-mode="unit">Unit</button></span><span class="estimate-tabs unit-sort-tabs" id="unitSortTabs" aria-label="Unit price sorting metric" hidden><button type="button" data-unit-sort="buy">Buy</button><button type="button" data-unit-sort="latest">Latest</button><button class="active" type="button" data-unit-sort="sell">Sell</button></span>
+          <div class="price-sort-group">
+            <span class="inline-label">Price sort:</span><span class="compact-segment" aria-label="Inventory price sorting basis"><button class="active" type="button" data-stash-sort-mode="total">Total</button><button type="button" data-stash-sort-mode="unit">Unit</button></span><span class="estimate-tabs unit-sort-tabs" id="unitSortTabs" aria-label="Unit price sorting metric" hidden><button type="button" data-unit-sort="buy">Buy</button><button type="button" data-unit-sort="latest">Latest</button><button class="active" type="button" data-unit-sort="sell">Sell</button></span>
+          </div>
         </div>
       </div>
       <div class="stash-price-head"><button class="item-head" type="button" data-stash-sort="item">Item</button><button class="qty-head" type="button" data-stash-sort="qty">Qty.</button><button class="buy-head" type="button" data-stash-sort="buy">Buy</button><button class="latest-head" type="button" data-stash-sort="latest">Latest</button><button class="sell-head" type="button" data-stash-sort="sell">Sell ▼</button></div>
@@ -666,13 +679,14 @@ async function refreshBrlRate(){
 
 function filteredStash(){
   if(!stashData)return[];
-  const source=stashSource();
   if(stashSearchQuery){
+    const source=stashSource(true);
     return source.filter(item=>{
       const str=(item.name+' '+(item.type||'')+' '+(item.grade||'')+' '+(item.heroes?item.heroes.join(' '):'')).toLowerCase();
       return str.includes(stashSearchQuery);
     });
   }
+  const source=stashSource(false);
   return source.filter(item=>{
     if(stashFilter==='material'&&item.kind!=='material')return false;
     if(stashFilter==='gear'){
@@ -686,16 +700,16 @@ function filteredStash(){
   });
 }
 
-function stashSource(){
+function stashSource(ignoreFilters=false){
   if(!stashData)return[];
   let rawSource=[];
-  if(equippedOnly){
+  if(equippedOnly && !ignoreFilters){
     rawSource=[...(stashData.equippedItems||[])];
   }else{
     rawSource=[...stashData.items,...(stashData.unlistedItems||[])];
-    if(showEquipped)rawSource.push(...(stashData.equippedItems||[]));
+    if(showEquipped || ignoreFilters)rawSource.push(...(stashData.equippedItems||[]));
   }
-  const source=rawSource.filter(item=>!marketableOnly||item.marketable);
+  const source=rawSource.filter(item=>(ignoreFilters || !marketableOnly || item.marketable));
   const merged=new Map();
   for(const item of source){
     const key=item.marketListed===false?`unlisted:${item.itemKey}`:`market:${item.hash}`;
@@ -778,7 +792,8 @@ function renderStash(){
     const equippedTag=item.equipped?`<span class="equipped-tag" title="Equipped by ${escapeHtml((item.heroes||[]).join(', '))}">Equipped</span>`:'';
     const u=itemSteamUrl(item);
     const link=u?`<a class="steam-link" href="${u}" target="_blank" rel="noopener" title="Open item on Steam" aria-label="Open ${escapeHtml(item.name)} on Steam">${steamIcon()}</a>`:'<span class="steam-link-space" aria-hidden="true"></span>';
-    return `<div class="srow${excluded?' excluded':''}"><span class="kind" title="${item.kind==='material'?'Material':'Equipment'}">${item.kind==='material'?'◆':'⚔'}</span><span class="stash-icon" style="--rarity-color:#${rarityColor}">${item.icon?`<img loading="lazy" src="${item.icon}" alt="">`:'<span class="unlisted-icon">?</span>'}<button class="stash-visibility" type="button" data-stash-visibility="${encodeURIComponent(visibilityKey)}" title="${excluded?'Include item in inventory estimates':'Exclude item from inventory estimates'}" aria-label="${excluded?'Include':'Exclude'} ${escapeHtml(item.name)} ${excluded?'in':'from'} inventory estimates">${visibilityIcon(excluded)}</button></span><div class="sn"><div class="sn-title"><b${color?` style="color:#${color}"`:''}>${escapeHtml(item.name)}</b>${equippedTag}</div><small>${escapeHtml(item.type)}${level}${unlisted?` · ${marketNote}`:''}</small></div><div class="qty">x${item.qty}</div>${prices}${link}</div>`;
+    const titleHtml=u?`<a class="sn-link" href="${u}" target="_blank" rel="noopener"><b${color?` style="color:#${color}"`:''}>${escapeHtml(item.name)}</b></a>`:`<b${color?` style="color:#${color}"`:''}>${escapeHtml(item.name)}</b>`;
+    return `<div class="srow${excluded?' excluded':''}"><span class="kind" title="${item.kind==='material'?'Material':'Equipment'}">${item.kind==='material'?'◆':'⚔'}</span><span class="stash-icon" style="--rarity-color:#${rarityColor}">${item.icon?`<img loading="lazy" src="${item.icon}" alt="">`:'<span class="unlisted-icon">?</span>'}<button class="stash-visibility" type="button" data-stash-visibility="${encodeURIComponent(visibilityKey)}" title="${excluded?'Include item in inventory estimates':'Exclude item from inventory estimates'}" aria-label="${excluded?'Include':'Exclude'} ${escapeHtml(item.name)} ${excluded?'in':'from'} inventory estimates">${visibilityIcon(excluded)}</button></span><div class="sn"><div class="sn-title">${titleHtml}${equippedTag}</div><small>${escapeHtml(item.type)}${level}${unlisted?` · ${marketNote}`:''}</small></div><div class="qty">x${item.qty}</div>${prices}${link}</div>`;
   }).join(''):'<div class="empty">No items match the selected filters.</div>';
   queueMicrotask(()=>loadMarketDetails(detailItems));
 }
