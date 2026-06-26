@@ -84,9 +84,9 @@ function queueSteamRequest(task) {
   return queued;
 }
 
-async function steamFetch(url, accept, parser) {
+async function steamFetch(url, accept, parser, maxRetries = STEAM_MAX_RETRIES) {
   let lastError;
-  for (let attempt = 0; attempt <= STEAM_MAX_RETRIES; attempt++) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await queueSteamRequest(async () => {
         const res = await fetch(url, {
@@ -105,7 +105,7 @@ async function steamFetch(url, accept, parser) {
       });
     } catch (e) {
       lastError = e;
-      if (e.code !== 429 || attempt === STEAM_MAX_RETRIES) break;
+      if (e.code !== 429 || attempt === maxRetries) break;
       if (attempt === 0) log(`Steam rate limit; cooling down before retry`);
       await sleep(Math.max(0, steamCooldownUntil - Date.now()));
     }
@@ -117,8 +117,8 @@ async function steamGet(url) {
   return steamFetch(url, 'application/json', res => res.json());
 }
 
-async function steamGetText(url) {
-  return steamFetch(url, 'text/html', res => res.text());
+async function steamGetText(url, maxRetries = STEAM_MAX_RETRIES) {
+  return steamFetch(url, 'text/html', res => res.text(), maxRetries);
 }
 
 function readListCache() {
@@ -176,7 +176,6 @@ async function fetchAllItems() {
     try {
       j = await steamGet(url);
     } catch (e) {
-      if (e.code === 429 && items.length) { log(`429 na pagina start=${start} — entregando parcial (${items.length})`); break; }
       throw e;
     }
     if (!j?.success) throw new Error('steam respondeu success=false');
@@ -252,7 +251,7 @@ async function fetchMarketDetail(name) {
   const hit = detailCache.get(name);
   if (hit && (Date.now() - hit.at) < DETAIL_TTL_MS) return hit.data;
   const url = `https://steamcommunity.com/market/listings/${APPID}/${encodeURIComponent(name)}`;
-  const html = await steamGetText(url);
+  const html = await steamGetText(url, 0);
   const buy = html.match(/amtMaxBuyOrder\D+(\d+)/);
   const history = [...html.matchAll(/time\D+(\d+)\D+price_median\D+([0-9.]+)\D+purchases\D+(\d+)/g)];
   const latest = history.at(-1);
@@ -273,6 +272,11 @@ async function apiMarketDetails(query = {}) {
   const details = [];
   for (const name of names) {
     const cached = detailCache.get(name);
+    if (steamCooldownUntil > Date.now()) {
+      if (cached?.data) details.push({ ...cached.data, stale: true });
+      else details.push({ name, error: true, rateLimited: true });
+      continue;
+    }
     try {
       details.push(await fetchMarketDetail(name));
     } catch (e) {
