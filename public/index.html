@@ -622,6 +622,7 @@ function priceColumn(item,metric,qty=1,tag='div',showUnit=false){
     const unitCents=metric==='buy'?detail.buyBrlCents:detail.latestBrlCents;
     const cents=unitCents*qty;
     primary=cents?formatBrlMoney(cents,currency):'n/a';
+    if(detail.stale&&primary!=='n/a')primary=`<span title="Outdated price (Steam unavailable)" style="cursor:help;opacity:0.8">${primary}*</span>`;
     secondary=cents&&!marketTable?(showUnit?`${formatBrlMoney(unitCents,currency)} each`:formatBrlMoney(cents,otherCurrency())):'';
     if(metric==='latest'&&detail.latestAt)date=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'}).format(detail.latestAt);
     if(metric==='latest'&&item.marketListed===false&&detail.latestBrlCents>0)date=`${date}${date?' · ':''}Historical`;
