@@ -641,9 +641,12 @@ async function loadMarketDetails(items){
   updateStashTitle();
   try{
     const data=await window.api.getMarketDetails({names});
-    for(const detail of data.details||[])if(!detail.error)marketDetails.set(detail.name,detail);
+    for(const detail of data.details||[])marketDetails.set(detail.name,detail);
   }catch{}finally{
-    names.forEach(name=>detailPending.delete(name));
+    names.forEach(name=>{
+      if(!marketDetails.has(name))marketDetails.set(name,{name,error:true});
+      detailPending.delete(name);
+    });
     updateStashTitle();
     renderStash();renderMarket();
   }
