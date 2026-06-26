@@ -625,7 +625,7 @@ function priceColumn(item,metric,qty=1,tag='div',showUnit=false){
     if(detail.stale&&primary!=='n/a')primary=`<span title="Outdated price (Steam unavailable)" style="cursor:help;opacity:0.8">${primary}*</span>`;
     secondary=cents&&!marketTable?(showUnit?`${formatBrlMoney(unitCents,currency)} each`:formatBrlMoney(cents,otherCurrency())):'';
     if(metric==='latest'&&detail.latestAt)date=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'}).format(detail.latestAt);
-    if(metric==='latest'&&item.marketListed===false&&detail.latestBrlCents>0)date=`${date}${date?' · ':''}Historical`;
+
   }
   return `<${tag} class="price-cell${tag==='td'?' market-price':''} ${metric}"><span class="price-value">${primary}</span>${secondary||date?`<span class="price-sub">${secondary}${secondary&&date?' · ':''}${date}</span>`:''}</${tag}>`;
 }
